@@ -72,7 +72,15 @@ app.get("/proxy", async (req, res) => {
   try {
     const response = await axios.post(
       `https://api.notion.com/v1/databases/${process.env.NOTION_DATABASE_ID}/query`,
-      {},
+      {
+        page_size: 40, // 최대 40개까지 가져오기
+        sorts: [
+          {
+            property: "DATE", // 날짜 기준으로 정렬 (필드 이름을 적절히 수정)
+            direction: "descending", // 최신 순으로 정렬
+          },
+        ],
+      },
       {
         headers: {
           Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
@@ -81,7 +89,7 @@ app.get("/proxy", async (req, res) => {
         },
       }
     );
-    res.json(response.data);
+    res.json(response.data.results); // 중복된 데이터를 피하기 위해 results만 반환
   } catch (error) {
     console.error(
       "Notion API에서 데이터 가져오기 오류:",
@@ -90,6 +98,7 @@ app.get("/proxy", async (req, res) => {
     res.status(500).json({ error: "Notion API에서 데이터 가져오기 실패" });
   }
 });
+
 
 // PATCH 요청으로 데이터 수정
 app.patch("/proxy/:id", async (req, res) => {
