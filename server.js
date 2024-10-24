@@ -1,119 +1,174 @@
-/**
- * This is the main Node.js server script for your project
- * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
- */
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
+require("dotenv").config();
 
-const path = require("path");
+const app = express();
+const PORT = 3000;
 
-// Require the fastify framework and instantiate it
-const fastify = require("fastify")({
-  // Set this to true for detailed logging:
-  logger: false,
-});
+app.use(cors());
+app.use(express.json());
 
-// ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
-
-// Setup our static files
-fastify.register(require("@fastify/static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/", // optional: default '/'
-});
-
-// Formbody lets us parse incoming forms
-fastify.register(require("@fastify/formbody"));
-
-// View is a templating manager for fastify
-fastify.register(require("@fastify/view"), {
-  engine: {
-    handlebars: require("handlebars"),
-  },
-});
-
-// Load and parse SEO data
-const seo = require("./src/seo.json");
-if (seo.url === "glitch-default") {
-  seo.url = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
+// 환경 변수 확인
+if (!process.env.NOTION_DATABASE_ID || !process.env.NOTION_API_KEY) {
+  console.error("환경 변수가 설정되어 있지 않습니다.");
+  process.exit(1);
 }
 
-/**
- * Our home page route
- *
- * Returns src/pages/index.hbs with data built into it
- */
-fastify.get("/", function (request, reply) {
-  // params is an object we'll pass to our handlebars template
-  let params = { seo: seo };
+// POST 요청으로 데이터 추가
+app.post("/proxy", async (req, res) => {
+  const { name, title, pw, date } = req.body;
 
-  // If someone clicked the option for a random color it'll be passed in the querystring
-  if (request.query.randomize) {
-    // We need to load our color data file, pick one at random, and add it to the params
-    const colors = require("./src/colors.json");
-    const allColors = Object.keys(colors);
-    let currentColor = allColors[(allColors.length * Math.random()) << 0];
+  const newData = {
+    parent: { database_id: process.env.NOTION_DATABASE_ID },
+    properties: {
+      Name: {
+        rich_text: [{ text: { content: name } }],
+      },
+      Title: {
+        title: [{ text: { content: title } }],
+      },
+      PW: {
+        rich_text: [
+          {
+            text: {
+              content: pw,
+            },
+          },
+        ],
+      },
+      DATE: {
+        date: {
+          start: date,
+        },
+      },
+    },
+  };
 
-    // Add the color properties to the params object
-    params = {
-      color: colors[currentColor],
-      colorError: null,
-      seo: seo,
-    };
+  try {
+    const response = await axios.post(
+      "https://api.notion.com/v1/pages",
+      newData,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
+    res.status(response.status).json({ message: "데이터 추가 성공" });
+  } catch (error) {
+    console.error(
+      "Notion API 요청 중 오류 발생:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ error: "서버 오류" });
   }
-
-  // The Handlebars code will be able to access the parameter values and build them into the page
-  return reply.view("/src/pages/index.hbs", params);
 });
 
-/**
- * Our POST route to handle and react to form submissions
- *
- * Accepts body data indicating the user choice
- */
-fastify.post("/", function (request, reply) {
-  // Build the params object to pass to the template
-  let params = { seo: seo };
+// GET 요청으로 데이터 가져오기
+app.get("/proxy", async (req, res) => {
+  try {
+    const response = await axios.post(
+      `https://api.notion.com/v1/databases/${process.env.NOTION_DATABASE_ID}/query`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Notion API에서 데이터 가져오기 오류:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ error: "Notion API에서 데이터 가져오기 실패" });
+  }
+});
 
-  // If the user submitted a color through the form it'll be passed here in the request body
-  let color = request.body.color;
+// PATCH 요청으로 데이터 수정
+app.patch("/proxy/:id", async (req, res) => {
+  const { id } = req.params;
+  const password = req.headers["authorization"];
 
-  // If it's not empty, let's try to find the color
-  if (color) {
-    // ADD CODE FROM TODO HERE TO SAVE SUBMITTED FAVORITES
+  try {
+    const response = await axios.get(`https://api.notion.com/v1/pages/${id}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        "Notion-Version": "2022-06-28",
+      },
+    });
 
-    // Load our color data file
-    const colors = require("./src/colors.json");
+    const notionPw = response.data.properties.PW.rich_text[0]?.text?.content;
 
-    // Take our form submission, remove whitespace, and convert to lowercase
-    color = color.toLowerCase().replace(/\s/g, "");
-
-    // Now we see if that color is a key in our colors object
-    if (colors[color]) {
-      // Found one!
-      params = {
-        color: colors[color],
-        colorError: null,
-        seo: seo,
-      };
+    if (password === notionPw) {
+      const updateResponse = await axios.patch(
+        `https://api.notion.com/v1/pages/${id}`,
+        req.body,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+            "Content-Type": "application/json",
+            "Notion-Version": "2022-06-28",
+          },
+        }
+      );
+      res.json(updateResponse.data);
     } else {
-      // No luck! Return the user value as the error property
-      params = {
-        colorError: request.body.color,
-        seo: seo,
-      };
+      res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
     }
+  } catch (error) {
+    console.error(
+      "Notion API에서 데이터 수정 오류:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ error: "Notion API에서 데이터 수정 실패" });
   }
-
-  // The Handlebars template will use the parameter values to update the page with the chosen color
-  return reply.view("/src/pages/index.hbs", params);
 });
 
-// Run the server and report out to the logs
-fastify.listen(
-  { port: process.env.PORT, host: "0.0.0.0" },
-  function (err, address) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
+// DELETE 요청으로 데이터 삭제
+app.delete("/proxy/:id", async (req, res) => {
+  const { id } = req.params;
+  const password = req.headers["authorization"];
+
+  try {
+    const response = await axios.get(`https://api.notion.com/v1/pages/${id}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        "Notion-Version": "2022-06-28",
+      },
+    });
+
+    const notionPw = response.data.properties.PW.rich_text[0]?.text?.content;
+
+    if (password === notionPw) {
+      const deleteResponse = await axios.delete(
+        `https://api.notion.com/v1/blocks/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+            "Notion-Version": "2022-06-28",
+          },
+        }
+      );
+      res.json({ message: "데이터 삭제 성공", data: deleteResponse.data });
+    } else {
+      res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
     }
-    console.log(`Your app is listening on ${address}`);
+  } catch (error) {
+    console.error(
+      "Notion API에서 데이터 삭제 오류:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ error: "Notion API에서 데이터 삭제 실패" });
   }
-);
+});
+
+app.listen(PORT, () => {
+  console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
+});
