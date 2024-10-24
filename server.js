@@ -15,11 +15,6 @@ if (!process.env.NOTION_DATABASE_ID || !process.env.NOTION_API_KEY) {
   process.exit(1);
 }
 
-// 기본 경로에 대한 GET 요청 추가
-app.get("/", (req, res) => {
-  res.send("API에 오신 것을 환영합니다! 사용 가능한 엔드포인트: /proxy");
-});
-
 // POST 요청으로 데이터 추가
 app.post("/proxy", async (req, res) => {
   const { name, title, pw, date } = req.body;
