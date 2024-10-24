@@ -70,25 +70,25 @@ app.post("/proxy", async (req, res) => {
 });
 
 // GET 요청으로 데이터 가져오기
-// GET 요청으로 'lag'가 '1'인 데이터 가져오기
-// GET 요청으로 'lag'가 '1'인 데이터 가져오기 (페이징 처리)
 app.get("/proxy", async (req, res) => {
-  const { startCursor } = req.query; // 쿼리 파라미터로 startCursor 받기
-  const query = {
+  const offset = parseInt(req.query.offset) || 0; // 쿼리에서 오프셋 가져오기
+  const limit = 10; // 가져올 데이터 수
+
+  const filter = {
     filter: {
-      property: "lag", // 'lag' 속성 지정
+      property: 'lag',
       rich_text: {
-        equals: "1", // 'lag'가 '1'인 데이터 필터링
+        equals: '1', // 원하는 조건 설정
       },
     },
-    page_size: 10, // 페이지 크기를 10으로 설정
-    start_cursor: startCursor || undefined, // startCursor가 있을 경우 설정
+    start: offset, // 오프셋 적용
+    page_size: limit, // 페이지 사이즈 설정
   };
 
   try {
     const response = await axios.post(
       `https://api.notion.com/v1/databases/${process.env.NOTION_DATABASE_ID}/query`,
-      query, // 쿼리 객체를 사용
+      filter,
       {
         headers: {
           Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
