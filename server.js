@@ -6,7 +6,10 @@ require("dotenv").config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: "https://www.tokkitokki.kr",
+}));
+
 app.use(express.json());
 
 // 환경 변수 확인
@@ -76,7 +79,7 @@ app.get("/proxy", async (req, res) => {
       page_size: 10,
       filter: {
         property: "lag",
-        number: {
+        rich_text: {
           equals: 1,
         },
       },
@@ -93,7 +96,7 @@ app.get("/proxy", async (req, res) => {
       page_size: 10,
       filter: {
         property: "lag",
-        number: {
+        rich_text: {
           equals: 2,
         },
       },
