@@ -6,7 +6,9 @@ require("dotenv").config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors({
+    origin: ['https://www.tokkitokki.kr', 'https://oopy.io', 'https://app.oopy.io','https://notion2.oopy.io'], // 허용할 도메인 배열
+}));
 app.use(express.json());
 
 // 환경 변수 확인
