@@ -69,7 +69,9 @@ app.post("/proxy", async (req, res) => {
 
 // GET 요청으로 데이터 가져오기
 // GET 요청으로 'lag'가 '1'인 데이터 가져오기
+// GET 요청으로 'lag'가 '1'인 데이터 가져오기 (페이징 처리)
 app.get("/proxy", async (req, res) => {
+  const { startCursor } = req.query; // 쿼리 파라미터로 startCursor 받기
   const query = {
     filter: {
       property: "lag", // 'lag' 속성 지정
@@ -77,6 +79,8 @@ app.get("/proxy", async (req, res) => {
         equals: "1", // 'lag'가 '1'인 데이터 필터링
       },
     },
+    page_size: 10, // 페이지 크기를 10으로 설정
+    start_cursor: startCursor || undefined, // startCursor가 있을 경우 설정
   };
 
   try {
@@ -100,6 +104,7 @@ app.get("/proxy", async (req, res) => {
     res.status(500).json({ error: "Notion API에서 데이터 가져오기 실패" });
   }
 });
+
 
 
 // PATCH 요청으로 데이터 수정
