@@ -102,28 +102,50 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
   return await response.json();
 }
 
-// 노션 데이터베이스에서 데이터 삭제(아카이브)하기
-async function deleteFromDatabase(id, pw) {
-  if(pw){
+// 특정 페이지의 PW 가져오기
+async function getPagePw(id) {
   const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
-    method: "PATCH",
+    method: "GET",
     headers: {
       Authorization: `Bearer ${notionToken}`,
       "Notion-Version": "2022-06-28",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      archived: true
-    })
+    }
   });
 
   if (!response.ok) {
-    throw new Error(`Error: ${response.status}`);
+    throw new Error(`Error fetching page data: ${response.status}`);
   }
 
-  return await response.json(); // 성공 시 삭제된 데이터의 정보를 반환
+  const pageData = await response.json();
+  return pageData.properties.PW.rich_text[0]?.plain_text || "";
+}
+
+// 노션 데이터베이스에서 데이터 삭제(아카이브)하기
+async function deleteFromDatabase(id, pw) {
+  const storedPw = await getPagePw(id);
+
+  // pw 값이 일치하는 경우에만 삭제
+  if (storedPw === pw) {
+    const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        archived: true
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error archiving data: ${response.status}`);
+    }
+
+    return await response.json(); // 성공 시 삭제된 데이터의 정보를 반환
+  } else {
+    throw new Error("Provided password does not match.");
   }
-  return await ;
 }
 
 
@@ -156,7 +178,7 @@ app.delete("/api/data/", async (req, res) => {
   const { id , pw } = req.body;
 
   try {
-    await deleteFromDatabase(id);
+    await deleteFromDatabase(id, pw);
     res.status(204).send(); // 삭제 성공 시 204 No Content 응답
   } catch (error) {
     res.status(500).send(error.message);
