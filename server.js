@@ -102,12 +102,12 @@ app.get("/proxy", async (req, res) => {
 
 // PATCH 요청으로 데이터 수정
 app.patch("/proxy/:id", async (req, res) => {
-  const { id, name, title, pw } = req.body;
+  const { updateid, name, title, pw } = req.body;
   
   const updateData = {
-    properties: {
-      Name: {
-        rich_text: [{ text: { content: name } }],
+    "properties": {
+      "Name": {
+        "rich_text": [{ text: { content: name } }],
       },
       Title: {
         title: [{ text: { content: title } }],
@@ -118,7 +118,7 @@ app.patch("/proxy/:id", async (req, res) => {
   try {
 
       const updateResponse = await axios.patch(
-        `https://api.notion.com/v1/pages/${id}`,
+        `https://api.notion.com/v1/pages/${updateid}`,
         updateData,
         {
           headers: {
