@@ -105,38 +105,39 @@ app.patch("/proxy/:id", async (req, res) => {
   const { updateid, name, title, pw } = req.body;
   
   const updateData = {
-    "properties": {
-      "Name": {
-        "rich_text": [{ text: { content: name } }],
-      },
-      Title: {
-        title: [{ text: { content: title } }],
-      },
-    },
-  };
-
-  try {
-
-      const updateResponse = await axios.patch(
-        `https://api.notion.com/v1/pages/${updateid}`,
-        updateData,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
-            "Content-Type": "application/json",
-            "Notion-Version": "2022-06-28",
-          },
+        properties: {
+            "Name": {
+                "rich_text": [{ "text": { "content": name } }],
+            },
+            "Title": {
+                "title": [{ "text": { "content": title } }],
+            },
         }
-      );
-      res.json(updateResponse.data);
-    
-  } catch (error) {
-    console.error(
-      "Notion API에서 데이터 수정 오류:",
-      error.response?.data || error.message
-    );
-    res.status(500).json({ error: "Notion API에서 데이터 수정 실패" });
-  }
+    };
+  
+  
+  
+  try {
+        const response = await fetch(`https://api.notion.com/v1/pages/${updateid}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${process.env.NOTION_API_KEY}`, // 환경 변수에서 API 키 가져오기
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28'
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('페이지 업데이트 성공:', data);
+        } else {
+            console.error('페이지 업데이트 실패:', response.statusText);
+        }
+    } catch (error) {
+        console.error('페이지 업데이트 오류:', error);
+    }
+  
 });
 
 // DELETE 요청으로 데이터 삭제
