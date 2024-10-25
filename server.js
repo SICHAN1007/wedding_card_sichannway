@@ -85,7 +85,7 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
         icon: {
           rich_text: [{ text: { content: icon } }],
         },
-        pw: {
+        PW: {
           rich_text: [{ text: { content: pw } }],
         },
         DATE: {
