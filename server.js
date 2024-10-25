@@ -54,8 +54,8 @@ async function getDatabase() {
     id: item.id,
     DATE: item.properties.DATE.date?.start || "",
     lag: item.properties.lag.rich_text?.[0]?.plain_text || "",
-    Name: item.properties.Name.title?.[0]?.plain_text || "",
-    Title: item.properties.Title.rich_text?.[0]?.plain_text || "",
+    Name: item.properties.Name.rich_text?.[0]?.plain_text || "",
+    Title: item.properties.Title.title?.[0]?.plain_text || "",
     icon: item.properties.icon.rich_text?.[0]?.plain_text || ""
   }));
 }
