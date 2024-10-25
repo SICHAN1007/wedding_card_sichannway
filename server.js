@@ -145,11 +145,11 @@ app.post("/api/data", async (req, res) => {
 
 
 // 데이터 삭제 API 엔드포인트 추가
-app.delete("/api/data/:id", async (req, res) => {
-  const pageId = req.params.id; // URL에서 페이지 ID 가져오기
+app.delete("/api/data/", async (req, res) => {
+  const { id } = req.body;
 
   try {
-    await deleteFromDatabase(pageId);
+    await deleteFromDatabase(id);
     res.status(204).send(); // 삭제 성공 시 204 No Content 응답
   } catch (error) {
     res.status(500).send(error.message);
