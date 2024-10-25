@@ -89,7 +89,7 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
           rich_text: [{ text: { content: pw } }],
         },
         DATE: {
-          date: { start: new Date().toISOString() } // 현재 날짜로 설정
+          date: { start: date } // 현재 날짜로 설정
         },
       },
     }),
@@ -173,23 +173,26 @@ async function updateDatabase(id, updates) {
 
 // 데이터 수정 API 엔드포인트 추가
 app.patch("/api/data", async (req, res) => {
-  const { id, name, title, lag, icon, pw } = req.body;
+  const { id, name, title, icon, pw ,date} = req.body;
   const storedPw = await getPagePw(id);
   
-  
+  if (storedPw === pw) {
   // 업데이트할 속성 설정
   const updates = {};
   if (name) updates.Name = { rich_text: [{ text: { content: name } }] };
   if (title) updates.Title = { title: [{ text: { content: title } }] };
-  if (lag) updates.lag = { rich_text: [{ text: { content: lag } }] };
   if (icon) updates.icon = { rich_text: [{ text: { content: icon } }] };
-  if (pw) updates.PW = { rich_text: [{ text: { content: pw } }] };
+  if (date) updates.DATE= {date: { start: date }};
 
-  try {
-    const updatedData = await updateDatabase(id, updates);
-    res.status(200).json(updatedData);
-  } catch (error) {
-    res.status(500).send(error.message);
+    try {
+      const updatedData = await updateDatabase(id, updates);
+      res.status(200).json(updatedData);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+    else {
+    throw new Error("Provided password does not match.");
   }
 });
 
