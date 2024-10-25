@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000; // Glitch 환경에서 PORT 사용
 
 app.use(cors()); // CORS 설정
 app.use(express.static('public')); // 정적 파일 제공을 위한 설정
+app.use(express.json()); // JSON 본문 파싱을 위한 미들웨어
 
 const notionToken = process.env.NOTION_TOKEN;
 const databaseId = process.env.DATABASE_ID;
@@ -60,11 +61,64 @@ async function getDatabase() {
   }));
 }
 
+// 노션 데이터베이스에 데이터 추가하기
+async function addToDatabase(name, title, lag, icon, pw, date) {
+  const response = await fetch(`https://api.notion.com/v1/pages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${notionToken}`,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      parent: { database_id: databaseId },
+      properties: {
+        Name: {
+          rich_text: [{ text: { content: name } }],
+        },
+        Title: {
+          title: [{ text: { content: title } }],
+        },
+        lag: {
+          rich_text: [{ text: { content: lag } }],
+        },
+        icon: {
+          rich_text: [{ text: { content: icon } }],
+        },
+        pw: {
+          rich_text: [{ text: { content: pw } }],
+        },
+        DATE: {
+          date: { start: date } // 현재 날짜로 설정
+        },
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 // API 엔드포인트 추가
 app.get("/api/data", async (req, res) => {
   try {
     const data = await getDatabase();
     res.json(data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// 새로운 데이터 추가 API 엔드포인트
+app.post("/api/data", async (req, res) => {
+  const { name, title, lag, icon, pw } = req.body;
+
+  try {
+    const newData = await addToDatabase(name, title, lag, icon, pw);
+    res.status(201).json(newData);
   } catch (error) {
     res.status(500).send(error.message);
   }
