@@ -1,8 +1,13 @@
+const express = require("express");
 const fetch = require("node-fetch");
 require("dotenv").config();
 
+const app = express();
+const port = process.env.PORT || 3000;
 const notionToken = process.env.NOTION_TOKEN;
 const databaseId = process.env.DATABASE_ID;
+
+app.use(express.static('public')); // 정적 파일 제공을 위한 설정
 
 // 노션 데이터베이스에서 조건에 맞는 데이터 가져오기
 async function getDatabase() {
@@ -42,18 +47,27 @@ async function getDatabase() {
     allResults.push(...data.results);
   }
 
-  // 필요한 속성만 추출하여 반환
   return allResults.map((item) => ({
     id: item.id,
-    DATE: item.properties.DATE.date?.start || "",  // DATE가 비어있을 경우 빈 문자열로 설정
+    DATE: item.properties.DATE.date?.start || "",
     lag: item.properties.lag.rich_text?.[0]?.plain_text || "",
-    Name: item.properties.Name.?.[0]?.plain_text || "",
+    Name: item.properties.Name.title?.[0]?.plain_text || "",
     Title: item.properties.Title.rich_text?.[0]?.plain_text || "",
-    icon: item.properties.icon.rich_text?.[0]?.plain_text || ""  // icon이 비어있을 경우 빈 문자열로 설정
+    icon: item.properties.icon.rich_text?.[0]?.plain_text || ""
   }));
 }
 
-// 함수 실행
-getDatabase()
-  .then((data) => console.log(data))
-  .catch((error) => console.error(error));
+// API 엔드포인트 추가
+app.get("/api/data", async (req, res) => {
+  try {
+    const data = await getDatabase();
+    res.json(data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// 서버 시작
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
