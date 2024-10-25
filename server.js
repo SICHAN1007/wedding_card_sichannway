@@ -114,8 +114,7 @@ app.patch("/proxy/:id", async (req, res) => {
             },
         }
     };
-  
-  
+
   
   try {
         const response = await fetch(`https://api.notion.com/v1/pages/${updateid}`, {
@@ -142,28 +141,30 @@ app.patch("/proxy/:id", async (req, res) => {
 
 // DELETE 요청으로 데이터 삭제
 app.delete("/proxy/:id", async (req, res) => {
-  const { id } = req.params;
-  const password = req.headers["authorization"];
+  const deleteId = req.params;
 
-  try {
-    const deleteResponse = await axios.delete(
-        `https://api.notion.com/v1/blocks/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
-            "Notion-Version": "2022-06-28",
-          },
+  const deleteBlock = async (deleteId) => {
+    const url = `https://api.notion.com/v1/blocks/${deleteId}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${process.env.NOTION_API_KEY}`, // 환경 변수에서 API 키 가져오기
+                'Notion-Version': '2022-06-28'
+            }
+        });
+
+        if (response.ok) {
+            console.log('블록 삭제 성공');
+        } else {
+            console.error('블록 삭제 실패:', response.statusText);
         }
-      );
-      res.json({ message: "데이터 삭제 성공", data: deleteResponse.data });
-    
-  } catch (error) {
-    console.error(
-      "Notion API에서 데이터 삭제 오류:",
-      error.response?.data || error.message
-    );
-    res.status(500).json({ error: "Notion API에서 데이터 삭제 실패" });
-  }
+    } catch (error) {
+        console.error('블록 삭제 오류:', error);
+    }
+};
+  
 });
 
 app.listen(PORT, () => {
