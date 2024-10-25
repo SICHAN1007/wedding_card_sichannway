@@ -118,6 +118,7 @@ app.post("/api/data", async (req, res) => {
 
   try {
     const newData = await addToDatabase( name, title, lag, icon, pw, date );
+    
     res.status(201).json(newData);
   } catch (error) {
     res.status(500).send(error.message);
