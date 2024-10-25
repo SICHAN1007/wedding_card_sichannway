@@ -1,13 +1,16 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; // Glitch 환경에서 PORT 사용
+
+app.use(cors()); // CORS 설정
+app.use(express.static('public')); // 정적 파일 제공을 위한 설정
+
 const notionToken = process.env.NOTION_TOKEN;
 const databaseId = process.env.DATABASE_ID;
-
-app.use(express.static('public')); // 정적 파일 제공을 위한 설정
 
 // 노션 데이터베이스에서 조건에 맞는 데이터 가져오기
 async function getDatabase() {
