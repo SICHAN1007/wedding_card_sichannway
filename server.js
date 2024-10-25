@@ -148,6 +148,52 @@ async function deleteFromDatabase(id, pw) {
   }
 }
 
+// 데이터베이스에서 데이터 수정하기
+async function updateDatabase(id, updates) {
+  const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${notionToken}`,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      properties: {
+        ...updates
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error updating data: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+// 데이터 수정 API 엔드포인트 추가
+app.patch("/api/data", async (req, res) => {
+  const { id, name, title, lag, icon, pw } = req.body;
+  const storedPw = await getPagePw(id);
+  
+  
+  // 업데이트할 속성 설정
+  const updates = {};
+  if (name) updates.Name = { rich_text: [{ text: { content: name } }] };
+  if (title) updates.Title = { title: [{ text: { content: title } }] };
+  if (lag) updates.lag = { rich_text: [{ text: { content: lag } }] };
+  if (icon) updates.icon = { rich_text: [{ text: { content: icon } }] };
+  if (pw) updates.PW = { rich_text: [{ text: { content: pw } }] };
+
+  try {
+    const updatedData = await updateDatabase(id, updates);
+    res.status(200).json(updatedData);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
 
 // API 엔드포인트 추가
 app.get("/api/data", async (req, res) => {
