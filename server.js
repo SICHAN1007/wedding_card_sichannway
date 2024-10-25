@@ -6,7 +6,11 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000; // Glitch 환경에서 PORT 사용
 
-app.use(cors()); // CORS 설정
+app.use(cors({
+    origin: "https://www.tokkitokki.kr", // specify your frontend domain
+  methods: ["GET", "POST", "DELETE", "PATCH"], // add PATCH here
+  allowedHeaders: ["Content-Type", "Authorization"]
+})); // CORS 설정
 app.use(express.static('public')); // 정적 파일 제공을 위한 설정
 app.use(express.json()); // JSON 본문 파싱을 위한 미들웨어
 
@@ -170,7 +174,7 @@ async function updateDatabase(id,  name, title, icon, date) {
         },
         DATE: {
           date: { start: date } // 현재 날짜로 설정
-        },
+        }
       }
     })
   });
