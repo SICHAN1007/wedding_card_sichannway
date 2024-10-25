@@ -119,7 +119,7 @@ app.post("/api/data", async (req, res) => {
   try {
     const newData = await addToDatabase( name, title, lag, icon, pw, date );
     const data = await getDatabase();
-    res.status(201).json({ message: "Data added successfully", data });
+    res.status(201).json(data);
   } catch (error) {
     res.status(500).send(error.message);
   }
