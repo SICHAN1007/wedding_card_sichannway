@@ -153,9 +153,7 @@ app.delete("/proxy/:id", async (req, res) => {
       },
     });
 
-    const notionPw = response.data.properties.PW.rich_text[0]?.text?.content;
 
-    if (password === notionPw) {
       const deleteResponse = await axios.delete(
         `https://api.notion.com/v1/blocks/${id}`,
         {
@@ -166,9 +164,7 @@ app.delete("/proxy/:id", async (req, res) => {
         }
       );
       res.json({ message: "데이터 삭제 성공", data: deleteResponse.data });
-    } else {
-      res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
-    }
+    
   } catch (error) {
     console.error(
       "Notion API에서 데이터 삭제 오류:",
