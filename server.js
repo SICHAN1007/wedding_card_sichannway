@@ -102,15 +102,18 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
   return await response.json();
 }
 
-// 노션 데이터베이스에서 데이터 삭제하기
+// 노션 데이터베이스에서 데이터 삭제(아카이브)하기
 async function deleteFromDatabase(pageId) {
   const response = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
-    method: "DELETE",
+    method: "PATCH",
     headers: {
       Authorization: `Bearer ${notionToken}`,
       "Notion-Version": "2022-06-28",
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      archived: true
+    })
   });
 
   if (!response.ok) {
@@ -119,6 +122,7 @@ async function deleteFromDatabase(pageId) {
 
   return await response.json(); // 성공 시 삭제된 데이터의 정보를 반환
 }
+
 
 // API 엔드포인트 추가
 app.get("/api/data", async (req, res) => {
