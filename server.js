@@ -105,7 +105,6 @@ app.patch("/proxy/:id", async (req, res) => {
   const { id, name, title, pw } = req.body;
   
   const updateData = {
-    parent: { database_id: process.env.NOTION_DATABASE_ID },
     properties: {
       Name: {
         rich_text: [{ text: { content: name } }],
