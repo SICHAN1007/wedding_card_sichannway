@@ -102,23 +102,25 @@ app.get("/proxy", async (req, res) => {
 
 // PATCH 요청으로 데이터 수정
 app.patch("/proxy/:id", async (req, res) => {
-  const { id } = req.params;
-  const password = req.headers["authorization"];
+  const { id, name, title, pw } = req.body;
+  
+  const updateData = {
+    parent: { database_id: process.env.NOTION_DATABASE_ID },
+    properties: {
+      Name: {
+        rich_text: [{ text: { content: name } }],
+      },
+      Title: {
+        title: [{ text: { content: title } }],
+      },
+    },
+  };
 
   try {
-    const response = await axios.get(`https://api.notion.com/v1/pages/${id}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
-        "Notion-Version": "2022-06-28",
-      },
-    });
 
-    const notionPw = response.data.properties.PW.rich_text[0]?.text?.content;
-
-    if (password === notionPw) {
       const updateResponse = await axios.patch(
         `https://api.notion.com/v1/pages/${id}`,
-        req.body,
+        updateData,
         {
           headers: {
             Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
@@ -128,9 +130,7 @@ app.patch("/proxy/:id", async (req, res) => {
         }
       );
       res.json(updateResponse.data);
-    } else {
-      res.status(401).json({ error: "비밀번호가 일치하지 않습니다." });
-    }
+    
   } catch (error) {
     console.error(
       "Notion API에서 데이터 수정 오류:",
@@ -146,7 +146,7 @@ app.delete("/proxy/:id", async (req, res) => {
   const password = req.headers["authorization"];
 
   try {
-      const deleteResponse = await axios.delete(
+    const deleteResponse = await axios.delete(
         `https://api.notion.com/v1/blocks/${id}`,
         {
           headers: {
