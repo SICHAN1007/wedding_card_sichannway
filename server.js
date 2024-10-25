@@ -150,7 +150,7 @@ app.post("/api/data", async (req, res) => {
 
 // 데이터 삭제 API 엔드포인트 추가
 app.delete("/api/data/", async (req, res) => {
-  const { id } = req.body;
+  const { id ,} = req.body;
 
   try {
     await deleteFromDatabase(id);
