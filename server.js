@@ -159,7 +159,24 @@ async function updateDatabase(id, updates) {
     },
     body: JSON.stringify({
       properties: {
-        ...updates
+        Name: {
+          rich_text: [{ text: { content: name } }],
+        },
+        Title: {
+          title: [{ text: { content: title } }],
+        },
+        lag: {
+          rich_text: [{ text: { content: lag } }],
+        },
+        icon: {
+          rich_text: [{ text: { content: icon } }],
+        },
+        PW: {
+          rich_text: [{ text: { content: pw } }],
+        },
+        DATE: {
+          date: { start: date } // 현재 날짜로 설정
+        },
       }
     })
   });
