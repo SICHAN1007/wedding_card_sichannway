@@ -243,6 +243,24 @@ app.delete("/api/data/", async (req, res) => {
     } catch (error) {
       res.status(500).send(error.message);
     }
+  }else{
+    const { id, name, title, icon, pw ,date} = req.body;
+  const storedPw = await getPagePw(id);
+  
+  if (storedPw === pw) {
+  // 업데이트할 속성 설정
+
+    try {
+      const updatedData = await updateDatabase(id, name, title, icon, date);
+      const data = await getDatabase();
+      res.status(200).json(data);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+    else {
+    throw new Error("Provided password does not match.");
+  }
   }
 });
 
