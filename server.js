@@ -149,7 +149,7 @@ async function deleteFromDatabase(id, pw) {
 }
 
 // 데이터베이스에서 데이터 수정하기
-async function updateDatabase(id, updates) {
+async function updateDatabase(id,  name, title, icon, date) {
   const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
     method: "PATCH",
     headers: {
@@ -165,14 +165,8 @@ async function updateDatabase(id, updates) {
         Title: {
           title: [{ text: { content: title } }],
         },
-        lag: {
-          rich_text: [{ text: { content: lag } }],
-        },
         icon: {
           rich_text: [{ text: { content: icon } }],
-        },
-        PW: {
-          rich_text: [{ text: { content: pw } }],
         },
         DATE: {
           date: { start: date } // 현재 날짜로 설정
@@ -195,15 +189,11 @@ app.patch("/api/data", async (req, res) => {
   
   if (storedPw === pw) {
   // 업데이트할 속성 설정
-  const updates = {};
-  if (name) updates.Name = { rich_text: [{ text: { content: name } }] };
-  if (title) updates.Title = { title: [{ text: { content: title } }] };
-  if (icon) updates.icon = { rich_text: [{ text: { content: icon } }] };
-  if (date) updates.DATE= {date: { start: date }};
 
     try {
-      const updatedData = await updateDatabase(id, updates);
-      res.status(200).json(updatedData);
+      const updatedData = await updateDatabase(id, name, title, icon, date);
+      const data = await getDatabase();
+      res.status(200).json(data);
     } catch (error) {
       res.status(500).send(error.message);
     }
