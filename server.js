@@ -114,10 +114,10 @@ app.get("/api/data", async (req, res) => {
 
 // 새로운 데이터 추가 API 엔드포인트
 app.post("/api/data", async (req, res) => {
-  const { name, title, lag, icon, pw } = req.body;
+  const { name, title, lag, icon, pw, date } = req.body;
 
   try {
-    const newData = await addToDatabase(name, title, lag, icon, pw);
+    const newData = await addToDatabase( name, title, lag, icon, pw, date );
     res.status(201).json(newData);
   } catch (error) {
     res.status(500).send(error.message);
