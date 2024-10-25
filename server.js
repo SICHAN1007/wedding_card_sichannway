@@ -146,14 +146,6 @@ app.delete("/proxy/:id", async (req, res) => {
   const password = req.headers["authorization"];
 
   try {
-    const response = await axios.get(`https://api.notion.com/v1/pages/${id}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
-        "Notion-Version": "2022-06-28",
-      },
-    });
-
-
       const deleteResponse = await axios.delete(
         `https://api.notion.com/v1/blocks/${id}`,
         {
