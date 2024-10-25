@@ -244,8 +244,7 @@ app.delete("/api/data/", async (req, res) => {
       res.status(500).send(error.message);
     }
   }else{
-    const { id, name, title, icon, pw ,date} = req.body;
-  const storedPw = await getPagePw(id);
+    const storedPw = await getPagePw(id);
   
   if (storedPw === pw) {
   // 업데이트할 속성 설정
