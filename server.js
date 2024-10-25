@@ -89,7 +89,7 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
           rich_text: [{ text: { content: pw } }],
         },
         DATE: {
-          date: { start: date } // 현재 날짜로 설정
+          date: { start: new Date().toISOString() } // 현재 날짜로 설정
         },
       },
     }),
