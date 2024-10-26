@@ -236,10 +236,12 @@ app.post("/api/data", async (req, res) => {
 // 데이터 삭제 API 엔드포인트 추가 
 app.delete("/api/data/", async (req, res) => {
   const { id , pw ,name, title, icon ,date ,Num} = req.body;
+  console.log(Num);
   if(Num==="delete"){
     try {
       await deleteFromDatabase(id, pw);
-      res.status(204).send; // 삭제 성공 시 204 No Content 응답
+      const data = await getDatabase();
+      res.status(204).json(data); // 삭제 성공 시 204 No Content 응답
     } catch (error) {
       res.status(500).send(error.message);
     }
