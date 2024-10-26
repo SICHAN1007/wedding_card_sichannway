@@ -241,7 +241,7 @@ app.delete("/api/data/", async (req, res) => {
     try {
       const deletdata = await deleteFromDatabase(id, pw);
       const data = await getDatabase();
-      res.status(204).json(data); // 삭제 성공 시 204 No Content 응답
+      res.json(data); // 삭제 성공 시 204 No Content 응답
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -254,7 +254,7 @@ app.delete("/api/data/", async (req, res) => {
       try {
         const updatedData = await updateDatabase(id, name, title, icon, date);
         const data = await getDatabase();
-        res.status(200).json(data);
+        res.json(data);
       } catch (error) {
         res.status(500).send(error.message);
       }
