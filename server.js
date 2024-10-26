@@ -108,9 +108,6 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
 
 // 특정 페이지의 PW 가져오기
 async function getPagePw(id) {
-    if (!id) {
-    throw new Error("ID is required"); // ID가 없을 경우 오류
-  }
   
   const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
     method: "GET",
@@ -240,7 +237,7 @@ app.post("/api/data", async (req, res) => {
 // 데이터 삭제 API 엔드포인트 추가 
 app.delete("/api/data/", async (req, res) => {
   const { id , pw ,name, title, icon ,date ,Num} = req.body;
-  if(Num==="Delete"){
+  if(Number(Num)==0){
     try {
       await deleteFromDatabase(id, pw);
       res.status(204).send(); // 삭제 성공 시 204 No Content 응답
