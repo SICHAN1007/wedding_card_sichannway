@@ -239,7 +239,8 @@ app.delete("/api/data/", async (req, res) => {
   if(Number(Num)==0){
     try {
       await deleteFromDatabase(id, pw);
-      res.status(204).send(); // 삭제 성공 시 204 No Content 응답
+      const data = await getDatabase();
+      res.status(204).json(data); // 삭제 성공 시 204 No Content 응답
     } catch (error) {
       res.status(500).send(error.message);
     }
