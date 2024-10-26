@@ -110,7 +110,7 @@ async function addToDatabase(name, title, lag, icon, pw, date) {
 async function getPagePw(id) {
   
   const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: `Bearer ${notionToken}`,
       "Notion-Version": "2022-06-28",
@@ -245,10 +245,7 @@ app.delete("/api/data/", async (req, res) => {
       res.status(500).send(error.message);
     }
   }else{
-    const storedPw = await getPagePw(id);
-  
-    if (storedPw === pw) {
-    // 업데이트할 속성 설정
+
 
       try {
         const updatedData = await updateDatabase(id, name, title, icon, date);
@@ -257,10 +254,7 @@ app.delete("/api/data/", async (req, res) => {
       } catch (error) {
         res.status(500).send(error.message);
       }
-    }
-      else {
-      throw new Error("Provided password does not match.");
-    }
+
   }
 });
 
