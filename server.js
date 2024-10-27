@@ -237,6 +237,8 @@ app.post("/api/data", async (req, res) => {
 app.delete("/api/data/", async (req, res) => {
   const { id , pw ,name, title, icon ,date ,Num} = req.body;
   console.log(Num);
+    console.log(pw);
+
   if(Num==="delete"){
     try {
       const deletdata = await deleteFromDatabase(id, pw);
@@ -247,7 +249,8 @@ app.delete("/api/data/", async (req, res) => {
     }
   }else{
     const storedPw = await getPagePw(id);
-  
+    console.log(storedPw);
+    
     if (storedPw === pw) {
     // 업데이트할 속성 설정
 
