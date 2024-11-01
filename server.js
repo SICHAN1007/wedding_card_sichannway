@@ -61,7 +61,9 @@ async function getDatabase() {
     lag: item.properties.lag.rich_text?.[0]?.plain_text || "",
     Name: item.properties.Name.rich_text?.[0]?.plain_text || "",
     Title: item.properties.Title.title?.[0]?.plain_text || "",
-    icon: item.properties.icon.rich_text?.[0]?.plain_text || ""
+    icon: item.properties.icon.rich_text?.[0]?.plain_text || "",
+    reply: item.properties.reply.rich_text?.[0]?.plain_text || "",
+    like: item.properties.like.rich_text?.[0]?.plain_text || ""
   }));
 }
 
