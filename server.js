@@ -19,7 +19,7 @@ const databaseId = process.env.DATABASE_ID;
 
 // 노션 데이터베이스에서 조건에 맞는 데이터 가져오기
 async function getDatabase() {
-  const lagValues = ["1", "2"]; // rich text 값
+  const lagValues = ["0" ,"1", "2"]; // rich text 값
   const allResults = [];
 
   for (const lag of lagValues) {
