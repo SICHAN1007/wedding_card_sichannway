@@ -249,7 +249,7 @@ app.delete("/api/data/", async (req, res) => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  }else{
+  }else if(Num==="update"){
     const storedPw = await getPagePw(id);
     console.log(storedPw);
     
@@ -260,6 +260,22 @@ app.delete("/api/data/", async (req, res) => {
         const updatedData = await updateDatabase(id, name, title, icon, date);
         const data = await getDatabase();
         res.json(data);
+      } catch (error) {
+        res.status(500).send(error.message);
+      }
+    }
+      else {
+      throw new Error("Provided password does not match.");
+    }
+  }else if(Num==="admin"){
+    const storedPw = await getPagePw(id);
+    console.log(storedPw);
+    
+    if (storedPw === pw) {
+    // 업데이트할 속성 설정
+
+      try {
+        res.send("ok");
       } catch (error) {
         res.status(500).send(error.message);
       }
