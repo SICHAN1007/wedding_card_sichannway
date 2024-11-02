@@ -250,10 +250,10 @@ async function HeartDatabase(id, title) {
     body: JSON.stringify({
       properties: {
         like: {
-          rich_text: [{ like: { content: "1" } }],
+          rich_text: [{ text: { content: "1" } }],
         },
         reply: {
-          rich_text: [{ reply: { content: title } }],
+          rich_text: [{ text: { content: title } }],
         }
       }
     })
