@@ -67,6 +67,56 @@ async function getDatabase() {
   }));
 }
 
+// 노션 데이터베이스에서 조건에 맞는 데이터 가져오기
+async function getDatabase2() {
+  const lagValues = ["0"]; // rich text 값
+  const allResults = [];
+
+  for (const lag of lagValues) {
+    const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filter: {
+          property: "lag",
+          rich_text: {
+            equals: lag
+          }
+        },
+        sorts: [
+          {
+            property: "DATE",
+            direction: "descending"
+          }
+        ],
+        page_size: 1
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    allResults.push(...data.results);
+  }
+
+  return allResults.map((item) => ({
+    id: item.id,
+    DATE: item.properties.DATE.date?.start || "",
+    lag: item.properties.lag.rich_text?.[0]?.plain_text || "",
+    Name: item.properties.Name.rich_text?.[0]?.plain_text || "",
+    Title: item.properties.Title.title?.[0]?.plain_text || "",
+    icon: item.properties.icon.rich_text?.[0]?.plain_text || "",
+    reply: item.properties.reply.rich_text?.[0]?.plain_text || "",
+    like: item.properties.like.rich_text?.[0]?.plain_text || ""
+  }));
+}
+
 // 노션 데이터베이스에 데이터 추가하기
 async function addToDatabase(name, title, lag, icon, pw, date) {
   const response = await fetch(`https://api.notion.com/v1/pages`, {
@@ -275,7 +325,8 @@ app.delete("/api/data/", async (req, res) => {
     // 업데이트할 속성 설정
 
       try {
-        res.send("ok");
+        const data = await getDatabase2();
+        res.json(data);
       } catch (error) {
         res.status(500).send(error.message);
       }
