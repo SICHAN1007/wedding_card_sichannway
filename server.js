@@ -238,6 +238,34 @@ async function updateDatabase(id,  name, title, icon, date) {
   return await response.json();
 }
 
+// 데이터베이스에서 데이터 수정하기
+async function HeartDatabase(id, title) {
+  const response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${notionToken}`,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      properties: {
+        like: {
+          rich_text: [{ like: { content: "1" } }],
+        },
+        reply: {
+          rich_text: [{ reply: { content: title } }],
+        }
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error updating data: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 // 데이터 수정 API 엔드포인트 추가
 app.patch("/api/data", async (req, res) => {
   const { id, name, title, icon, pw ,date} = req.body;
@@ -334,6 +362,18 @@ app.delete("/api/data/", async (req, res) => {
       else {
       throw new Error("Provided password does not match.");
     }
+  }
+  else if(Num==="heart"){
+
+
+      try {
+        const heartData = await HeartDatabase(id, title);
+        const data = await getDatabase2();
+        res.json(data);
+      } catch (error) {
+        res.status(500).send(error.message);
+      }
+
   }
 });
 
