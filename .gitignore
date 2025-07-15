@@ -1,3 +1,10 @@
-.glitchdotcom.json
-.node-gyp
-node_modules
+# 환경변수 파일
+.env
+
+# node_modules 폴더
+node_modules/
+
+# 기타 빌드 결과물 예시
+dist/
+build/
+*.log
