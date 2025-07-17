@@ -41,3 +41,7 @@ jobs:
     - name: Kubernetes 배포 (이미지 롤링 업데이트)
       run: |
         kubectl set image deployment/wedding-deployment wedding-container=${{ secrets.DOCKER_USERNAME }}/wedding:latest --namespace=wedding
+
+    - name: Test API server connectivity
+      run: |
+        curl -vk https://kschost.ddns.net:6443 || true
