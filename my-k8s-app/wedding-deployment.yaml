@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wedding-deployment
+  namespace: wedding
+  labels:
+    app: wedding
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wedding
+  template:
+    metadata:
+      labels:
+        app: wedding
+    spec:
+      containers:
+      - name: wedding-container
+        image: kimsichan93/wedding:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NOTION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: wedding-secret
+              key: NOTION_TOKEN
+        - name: DATABASE_ID
+          valueFrom:
+            secretKeyRef:
+              name: wedding-secret
+              key: DATABASE_ID 
