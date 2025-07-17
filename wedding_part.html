@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion 데이터베이스</title>
+    <style>
+    
+            /* 슬라이드쇼 컨테이너 스타일 */
+            .slideshow-container {
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: transparent;
+                width:100%; height:100%; 
+            }
+            /* 슬라이드의 공통 스타일 */
+            .slide {
+                display: none; /* 기본적으로 슬라이드 숨기기 */
+                position: relative;
+                width:100%; height:100%; 
+                overflow: hidden;
+            }
+            /* 각 슬라이드의 이미지 스타일 */
+            .slide img {
+                width:100%;  height:100%; 
+                
+            }
+            /* 활성화된 슬라이드에만 적용되는 스타일 */
+            .active-slide {
+                display: block;
+                animation: fadeEffect 1.5s;
+            }
+            /* 페이드 인 효과 */
+            @keyframes fadeEffect {
+                from {
+                    opacity: 0.4;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            /* 슬라이드 버튼 숨기기 */
+            .prev,
+            .next {
+                display: none; /* 버튼 숨기기 */
+            }
+            @keyframes blink {
+						    0% { color: #ffffff; }    /* 시작 색상 */
+						    50% { color: transparent; }  /* 중간 색상 */
+						    100% { color: #ffffff; }  /* 끝 색상 */
+						}
+						@keyframes growAndShrink {
+						    0% {
+						        width: 0%;
+						    }
+						    100% {
+						        width: 100%;
+						    }
+						}
+	    
+	    
+			.unit_Button {
+			    background-color: #e7d7a8; 
+			    color: #ffffff;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center;
+			    border: none; /* border 속성이 필요할 경우 추가 */
+			    border-radius: 10px;
+			    text-align: center;
+			    padding:8px;
+			    margin-left: 5px; /* 버튼 간 간격 */
+			    			    position: relative;
+			}
+			
+			.unit_Button_img {
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 18px;
+			    height: 18px;
+			}
+			
+			.add_submit_form {
+			    background-color: #ffffff;
+			    position:relative;
+			    width: 100%;
+			    height: 44px;
+			    padding: 5px;
+			    display: flex; /* Flexbox 사용 */
+			    justify-content: flex-end; /* 가로 방향 오른쪽 정렬 */
+			    align-items: flex-start; /* 세로 방향 가운데 정렬 */
+			    overflow: hidden;
+			    transition: all 1s ease
+			}
+			
+			.add_move_trans {
+			    background-color: transparent; /* 배경색을 투명하게 설정 */
+			    position: absolute; /* 부모 요소를 기준으로 절대 위치 지정 */
+			    top: -34px; /* 부모 요소의 하단에 정렬 */
+			    left: 5px; /* 부모 요소의 왼쪽에 정렬 */
+			    
+			    width: 100%; /* 너비를 부모 요소의 100%로 설정 */
+			    max-width: 313.2px; /* 최대 너비를 408픽셀로 설정 */
+			    height: 96px; /* */
+			    gap: 5px; /* Flexbox 요소 간의 간격을 5픽셀로 설정 */
+			    display: flex; /* Flexbox 레이아웃 사용 */
+			    flex-direction: column; /* Flexbox의 방향을 세로로 설정 */
+			    justify-content: flex-start; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: flex-start; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+			}
+    
+    .add_move_trans_unit{
+        background-color: transparent; 
+		    display: flex;
+		    justify-content: space-between; 
+		    align-items: center;
+		    border: none; /* border 속성이 필요할 경우 추가 */
+		    border-radius: 10px;
+		    width: 77.9901vw; 
+		    max-width: 313.2px;
+		    height: 34px;
+		    gap:5px;
+		    			  transition: all 1s ease;
+				user-select: none;
+    }
+    
+    .add_text_unit{
+        background-color:#efefef; 
+		    display: flex;
+		    justify-content: space-between; 
+		    align-items: center;
+		    border: none; /* border 속성이 필요할 경우 추가 */
+		    border-radius: 10px;
+		    width: 77.9901vw; 
+		    max-width: 313.2px;
+		    height:34px;
+		    gap:5px;
+		    padding:5px 10px;   
+		    resize: none;
+		    overflow: scroll;
+		    transition: all 1s ease-in;
+    }
+    
+    .add_title_unit{
+				background-color:#efefef;
+		    position:relative; 
+		    display: flex;
+        justify-content: center; 
+        flex-direction: column;
+        border: 0px solid #ffffff; 
+        border-radius: 10px;
+				width:100%;
+				height:34px;
+			  transition: all 1.5s ease;
+			  padding: 0 10px;
+			  
+	    }
+	    
+	    .add_icon_uni{
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 34px;
+			    height: 34px;
+	    }
+	    
+	    .add_icon_overlay {
+                display: none; /* 처음에는 숨겨진 상태 */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            
+      .add_icon_overlay_box {
+                position: relative;
+                display: grid;
+								grid-template-columns: repeat(auto-fit, minmax(34px, 34px));
+                gap:5px;
+                width: 100vw;
+                max-width: 408px;
+                height: auto;
+                background: transparent;
+                justify-content: center;
+                align-items: center;
+                padding: 5px;
+							  overflow: scroll;
+            }
+            
+       .update_submit_form {
+			    background-color: #ffffff;
+			    position:relative;
+			    width: 100%;
+			    height: 135px;
+			    padding: 5px;
+			    display: flex; /* Flexbox 사용 */
+			    justify-content: flex-end; /* 가로 방향 오른쪽 정렬 */
+			    align-items: flex-start; /* 세로 방향 가운데 정렬 */
+			    overflow: hidden;
+			    transition: all 1s ease
+			}
+			
+			.update_move_trans {
+			    background-color: transparent; /* 배경색을 투명하게 설정 */
+			    position: absolute; /* 부모 요소를 기준으로 절대 위치 지정 */
+			    top: 5px; /* 부모 요소의 하단에 정렬 */
+			    left: 5px; /* 부모 요소의 왼쪽에 정렬 */
+			    
+			    width: 87.549vw; /* 너비를 부모 요소의 100%로 설정 */
+			    max-width: 357.2px; /* 최대 너비를 408픽셀로 설정 */
+			    height: 130px; /* */
+			    gap: 5px; /* Flexbox 요소 간의 간격을 5픽셀로 설정 */
+			    display: flex; /* Flexbox 레이아웃 사용 */
+			    flex-direction: column; /* Flexbox의 방향을 세로로 설정 */
+			    justify-content: flex-end; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: flex-start; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+			}
+    
+    .update_move_trans_unit{
+        background-color: transparent; 
+		    display: flex;
+		    justify-content: center; 
+		    align-items: center;
+		    border: none; /* border 속성이 필요할 경우 추가 */
+		    border-radius: 10px;
+		    width: 87.549vw; 
+		    max-width: 357.2px;
+		    height: 34px;
+		    gap:5px;
+		    			  transition: all 1s ease;
+				user-select: none;
+    }
+    
+    .update_text_unit{
+        background-color:#efefef; 
+		    display: flex;
+		    justify-content: space-between; 
+		    align-items: center;
+		    border: none; /* border 속성이 필요할 경우 추가 */
+		    border-radius: 10px;
+		    width: 77.9901vw; 
+		    max-width: 313.2px;
+		    height:52px;
+		    gap:5px;
+		    padding:5px 10px;   
+		    resize: none;
+		    overflow: scroll;
+		    transition: all 1s ease-in;
+    }
+    
+    .update_title_unit{
+				background-color:#efefef;
+		    position:relative; 
+		    display: flex;
+        justify-content: center; 
+        flex-direction: column;
+        border: 0px solid #ffffff; 
+        border-radius: 10px;
+				width:100%;
+				height:34px;
+			  transition: all 1.5s ease;
+			  padding: 0 10px;
+			  
+	    }
+	    
+
+	    
+	    .update_unit_Button {
+			    background-color: #e7d7a8; 
+			    color: #ffffff;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center;
+			    border: none; /* border 속성이 필요할 경우 추가 */
+			    border-radius: 10px;
+			    text-align: center;
+			    padding:8px;
+			    margin-left: 5px;
+			    position: relative;
+			}
+			
+			.update_unit_Button_img {
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 18px;
+			    height: 18px;
+			}
+	    
+            
+       .add_top_line{
+           width:100%;
+           height:1px;
+           background-color:#cdcdcd;
+           margin-bottom:5px;
+       }
+	    .messageContainer{
+				   width:100%;
+				   height:auto;
+				   position: absolute;
+				   display:flex;
+					justify-content: center;
+			    align-items: center; 
+					flex-direction: column;
+	    }
+	    
+	    .messageContainer_spacer{
+				   width:100%;
+				   height:300px;
+position: relative;
+				   display:flex;
+					justify-content: center;
+			    align-items: center; 
+					flex-direction: column;
+	    }
+	    
+	    .massage_box{
+                position: relative;
+						    display: none;
+						    justify-content: space-between;
+                align-items: flex-start;
+                backgroun-color: #ffffff;
+                margin:5px 0;
+                width:100%;
+                height:auto;
+                padding: 0 5px;
+                gap:5px;
+                transition: all 1s ease;
+	    }
+	    
+	    
+	    .massage_text_box{
+						    position: relative;
+						    align-items: flex-start;
+						    justify-content: flex-start;
+						    display: flex;
+						    background-color: transparent;
+						    flex-direction: column;
+						    width:100%;
+						    height:auto;
+						    padding-right: 10px;
+	    }
+	    
+	    .massage_tile_box {
+			    position: relative;
+			    display: flex; 
+					flex-direction: raw;
+			    align-items: flex-end; 
+			    justify-content: flex-start;
+			    gap : 5px;
+			}
+	    
+	    .massage_name_box {
+			    position: relative;
+			    display: flex; 
+			    align-items: flex-start; 
+			    justify-content: flex-start;
+
+			    font-size: 12px;
+			    text-align: left;
+			}
+
+	    .massage_date_box{
+					position: relative;
+			    display: flex; 
+			    align-items: flex-end; 
+			    justify-content: flex-start;
+			    color: #cdcdcd;
+			    font-size: 10px;
+			    text-align: left;
+	    }
+	    
+	    .massage_main_box {
+			    position: relative;
+			    display: flex; 
+			    align-items: flex-start; 
+			    justify-content: flex-start;
+			    font-size: 15px;
+			    text-align: left;
+			}
+			
+			.massage_button_box {
+			    position: relative;
+			    display: flex; 
+					flex-direction: raw;
+			    align-items: flex-end; 
+			    justify-content: flex-start;
+			    gap : 10px;
+			    margin: 10px 0 5px 0;
+			}
+	    
+	    .masseage_button_unit{
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 18px;
+			    height: 18px;
+	    }
+	    
+	    .massage_box_heart{
+			    background-color: #ffffff;
+			    position: relative;
+			    opacity: 1;
+			    left: 0px;
+			    bottom: 0px;
+			    width: 77.9901vw; 
+		      max-width: 313.2px;
+			    height: auto;
+			    display: flex;
+			    gap: 5px;
+			    margin-top:5px;
+			    flex-direction: row; /* Flexbox의 방향을 세로로 설정 */
+			    justify-content: flex-start;/* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: flex-start; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+	    }
+	    
+	    .message_edit_box {
+			    background-color: #ffffff;
+			    transform: translateY(0);
+			    position: absolute;
+			    opacity: 0;
+			    right: 10px;
+			    bottom: 0px;
+			    width: 77.9901vw; 
+		      max-width: 313.2px;
+			    height: 101px;
+			    display: flex;
+			    z-index:-1;
+			    flex-direction: column; /* Flexbox의 방향을 세로로 설정 */
+			    justify-content: flex-start;/* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: flex-start; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+			}
+			
+			.message_edit_title_box{
+					width:100%;
+					height: 44px;
+					display: flex;
+			    flex-direction: row; 
+			    justify-content: space-between; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: center;
+			    
+			    gap:5px
+			}
+			 .add_icon_unit{
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 34px;
+			    height: 34px;
+	    }
+	    
+	    .message_icon_unit{
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    width: 34px;
+			    height: 34px;
+	    }
+			
+			.message_delete_box {
+			    background-color: #ffffff;
+			    transform: translateY(0);
+			    position: absolute;
+			    opacity: 0;
+			    left: 39px;
+			    bottom: 0px;
+			    width: 43.7745vw;
+			    max-width: 178.6px;
+			    height: 44px;
+			    display: flex;
+			    z-index:-1;
+			    flex-direction: row; /* Flexbox의 방향을 가로로 설정 */
+			    justify-content: space-between; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: center; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+			}
+			.message_heart_edit_box {
+			    background-color: #ffffff;
+			    transform: translateY(0);
+			    position: absolute;
+			    opacity: 0;
+			    left: 39px;
+			    bottom: 0px;
+			    width: 77.9901vw;
+			    max-width: 313.2px;
+			    height: 78px;
+			    display: flex;
+			    z-index:-1;
+			    flex-direction: row; /* Flexbox의 방향을 가로로 설정 */
+			    justify-content: space-between; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: center; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    transition: all 1s ease;
+			}
+			
+			.message_delete_box_admin {
+			    background-color: #ffffff;
+			    transform: translateY(0);
+			    position: absolute;
+			    opacity: 0;
+			    right: 5px;
+			    bottom: 0px;
+			    width: 43.7745vw;
+			    max-width: 178.6px;
+			    height: 44px;
+			    display: flex;
+			    z-index:-1;
+			    padding: 5px;
+			    flex-direction: row; /* Flexbox의 방향을 가로로 설정 */
+			    justify-content: space-between; /* Flexbox의 주축을 시작 방향으로 정렬 */
+			    align-items: center; /* Flexbox의 교차축을 시작 방향으로 정렬 */
+			    user-select: none;
+			    border-radius: 10px;
+			    transition: all 1s ease;
+			}
+
+	    
+	    .delet_box{
+			    width: 100%;
+			    height: auto;
+			    position: relative;
+					justify-content: center;
+			    display: flex;
+			    align-items: center; /* flex-direction 대신 사용 */
+			    background-color: #ffffff; 
+			    padding: 5px;
+			    gap: 5px;
+			    flex-direction: column;
+	    }
+	    
+	    .tab_title_box{
+			    width: 100%;
+			    height: auto;
+			    position: relative;
+			    display: flex;
+			    align-items: flex-start; /* flex-direction 대신 사용 */
+			    justify-content: center;
+					flex-direction: column;
+			    font-size: 18px;
+			    text-align: left;
+			    padding: 10px;
+			    gap:5px;
+			    background-color: transparent; 
+	    }
+	    
+	    .tab_button_box {
+			    position: relative;
+			    display: flex; 
+					flex-direction: raw;
+			    align-items: flex-end; 
+			    justify-content: flex-start;
+			    gap : 10px;
+			    padding: 0 5px;
+			}
+			
+			.tab_button {
+			    position: relative;
+			    display: flex; 
+			    align-items: center; 
+			    justify-content: center;
+			    width:33px;
+			    height:25px;
+			    background-color: #efefef;
+			    border-radius: 10px;
+			    border: 0px solid #ffffff;
+			}
+			
+			.tab_button_active {
+			    position: relative;
+			    display: flex; 
+			    align-items: center; 
+			    justify-content: center;
+			    width:34px;
+			    height:25px;
+			    background-color: #e7d7a8;
+			    border-radius: 10px;
+			    border: 0px solid #ffffff;
+			}
+			
+			.tab_box {
+			    display: flex;
+			    justify-content: space-between; /* 양쪽 끝으로 정렬 */
+			    align-items: center; /* 세로 가운데 정렬 (선택 사항) */
+			    width: 100%;
+			}
+			
+			.tab_refresh {
+			    background-color: transparent; 
+			    position: relative;
+			    display: flex;
+			    justify-content: center; 
+			    align-items: center; /* flex-direction 대신 사용 */
+			    margin: 8px;
+			    width: 18px;
+			    height: 18px;
+			}
+	    
+	    .messageField{
+		    width:100%;
+		    height:300px;
+		    min-height:300px;
+			   position: relative;
+			    display: flex;
+			    align-items: flex-start; 
+			    justify-content: flex-start;	   
+				   overflow: hidden;
+				   transition: all 1s ease;
+			    }
+			    
+			.message_more_cover{
+		    width:100%;
+		    height:112.5px;
+				position: absolute;
+				background: linear-gradient(to top, #fafafa, rgb(250, 250, 250, 0));
+				top:300px;
+				transform: translateY(-100%);
+				 display: flex;
+			   justify-content: center; 
+			   align-items: flex-end;
+			    transition: all 1s ease;
+			}
+			
+			.message_exit_button{
+		    width:100%;
+		    height:auto;
+				position: relative;
+				background-color: #ffffff;
+				color: #e7d7a8;
+				 display: flex;
+			   justify-content: flex-end; 
+			   align-items: center;
+			   text-align: right;
+			   padding:10px 10px;
+			   font-size: 15px;
+			}
+			
+			.message_more_cover_button{
+				 width:24px;
+				 height:24px;
+				 border: 0px solid #ffffff;
+			    transition: all 1s ease;
+			    margin: 10px;
+			}
+			
+			.rotate-animation {
+    animation: spin 2s linear infinite;
+		}
+		
+		@keyframes spin {
+		    from {
+		        transform: rotate(0deg);
+		    }
+		    to {
+		        transform: rotate(360deg);
+		    }
+		}
+		
+		.succese_overlay {
+                display: none; /* 처음에는 숨겨진 상태 */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+								background-color: transparent;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            
+            .succese_overlay_loding {
+                display: none; /* 처음에는 숨겨진 상태 */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+								background-color: transparent;
+								backdrop-filter: blur(5px);
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+       #animationPlayer {
+            display: none; /* 처음에는 보이지 않도록 설정 */
+        }
+        
+        
+       #animationPlayer_loding{
+                    display: none; /* 처음에는 보이지 않도록 설정 */
+			}
+			
+			#animationPlayer_update{
+                    display: none; /* 처음에는 보이지 않도록 설정 */
+			}
+			
+			#animationPlayer_delete{
+                    display: none; /* 처음에는 보이지 않도록 설정 */
+			}
+			
+			.like-content {
+    display: inline-block;
+    width: 100%;
+    margin: 40px 0 0;
+    padding: 40px 0 0;
+    font-size: 18px;
+    border-top: 10px dashed #eee;
+    text-align: center;
+}
+.like-content span {
+	color: #9d9da4;
+	font-family: monospace;
+}
+.like-content .btn-secondary {
+	  display: block;
+	  margin: 40px auto 0px;
+    text-align: center;
+    background: #ed2553;
+    border-radius: 3px;
+    box-shadow: 0 10px 20px -8px rgb(240, 75, 113);
+    padding: 10px 17px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    text-decoration: none;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+}
+.like-content .btn-secondary:hover {
+	  transform: translateY(-3px);
+}
+.like-content .btn-secondary .fa {
+	  margin-right: 5px;
+}
+.animate-like {
+	animation-name: likeAnimation;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+	animation-duration: 0.65s;
+}
+@keyframes likeAnimation {
+  0%   { transform: scale(30); }
+  100% { transform: scale(1); }
+}
+    </style>
+</head>
+<body>
+<div style="background-color:#fafafa; padding:5% 5% 10% 5%;user-select: none;" id="chatroom">
+	<div id="mobile_chet" style="background-color:#ffffff; user-select: none; border-radius: 10px; filter: drop-shadow(3px 2px 10px rgba(0, 0, 0, 0.3));">
+	<div style="background-color:#ffffff; user-select: none; border-radius: 10px; overflow: hidden; filter: drop-shadow(3px 2px 10px rgba(0, 0, 0, 0.3));">
+    <div onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" style="background-color:#fafafa; width:100%; height:100%;  position:relative; display: flex; justify-content: flex-start; flex-direction: column; overflow: hidden; align-items: center;">
+		    <div class="slideshow-container" id="slideshow-container"><!-- 슬라이드 이미지 추가 -->
+				<div id="slide_flesh"style="position:absolute; width:100%; height:100%; z-index: 10; top: 0; left:0; transition: all 1.5s ease-out; background-color:#ffffff;"></div>
+		    </div>
+		    <div onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" id="slide_in_box" style="background-color:transparent; position:absolute; padding: 3%; width:100%;  height:100%; top: 0; left: 50%; transform: translate(-50%, 0%);  border-radius: 10px;">
+		        <div onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" style="width:100%; height:100%; border: 1px solid #ffffff; border-radius: 10px;">
+		            <div onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" style="position:absolute; width:100%; height:100%; top:0; left:0; padding:5%; z-index: 10;">
+		                <p onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" style="animation: blink 2s infinite; color:#ffffff; text-align: left;">
+		                    <strong>
+		                        <span onclick="window.location.href='https://www.youtube.com/watch?v=KvIdiIxrWY8';" style="font-size: 16px;">● REC</span><br>
+		                    </strong>
+		                </p>
+		            </div>
+		        </div>
+		    </div>
+		    <div style="width: 0%; height: 3px; background-color:transparent; border: 1.5px solid #e7d7a8; position: absolute; bottom: 0; left: 0; animation: growAndShrink 18s linear infinite;"></div>
+		</div>
+
+		<div class="tab_title_box">
+			<div class="tab_box">
+			 🤵🏻👰🏻 함께하는 날, 우리의 결혼식🎉
+			 					<img class="tab_refresh" id="" onclick="delete_aerial_admin()" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2U3ZDdhOCIgY2xhc3M9ImJpIGJpLWJvb2ttYXJrLXN0YXItZmlsbCIgdmlld0JveD0iMCAwIDE2IDE2IiBpZD0iaWNvbi1ib29rbWFyay1zdGFyLWZpbGwtMTY5Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yIDE1LjVWMmEyIDIgMCAwIDEgMi0yaDhhMiAyIDAgMCAxIDIgMnYxMy41YS41LjUgMCAwIDEtLjc0LjQzOUw4IDEzLjA2OWwtNS4yNiAyLjg3QS41LjUgMCAwIDEgMiAxNS41ek04LjE2IDQuMWEuMTc4LjE3OCAwIDAgMC0uMzIgMGwtLjYzNCAxLjI4NWEuMTc4LjE3OCAwIDAgMS0uMTM0LjA5OGwtMS40Mi4yMDZhLjE3OC4xNzggMCAwIDAtLjA5OC4zMDNMNi41OCA2Ljk5M2MuMDQyLjA0MS4wNjEuMS4wNTEuMTU4TDYuMzkgOC41NjVhLjE3OC4xNzggMCAwIDAgLjI1OC4xODdsMS4yNy0uNjY4YS4xNzguMTc4IDAgMCAxIC4xNjUgMGwxLjI3LjY2OGEuMTc4LjE3OCAwIDAgMCAuMjU3LS4xODdMOS4zNjggNy4xNWEuMTc4LjE3OCAwIDAgMSAuMDUtLjE1OGwxLjAyOC0xLjAwMWEuMTc4LjE3OCAwIDAgMC0uMDk4LS4zMDNsLTEuNDItLjIwNmEuMTc4LjE3OCAwIDAgMS0uMTM0LS4wOThMOC4xNiA0LjF6Ij48L3BhdGg+PC9zdmc+">
+			 </div>
+			<div class="tab_box">
+					<div class="tab_button_box">
+						<button class="tab_button" id="tab_button_glober" onclick="tab_toggle('glober');">
+				        <img class="unit_Button_img" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24tZWFydGgtbGluZS0xIiB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIGZpbGw9IiNmYWZhZmEiPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiPjwvcGF0aD48cGF0aCBkPSJNNi4yMzUgNi40NTNhOCA4IDAgMCAwIDguODE3IDEyLjk0NGMuMTE1LS43NS0uMTM3LTEuNDctLjI0LTEuNzIyLS4yMy0uNTYtLjk4OC0xLjUxNy0yLjI1My0yLjg0NC0uMzM4LS4zNTUtLjMxNi0uNjI4LS4xOTUtMS40MzdsLjAxMy0uMDkxYy4wODItLjU1NC4yMi0uODgyIDIuMDg1LTEuMTc4Ljk0OC0uMTUgMS4xOTcuMjI4IDEuNTQyLjc1M2wuMTE2LjE3MmMuMzI4LjQ4LjU3MS41OS45MzguNzU2LjE2NS4wNzUuMzcuMTcuNjQ1LjMyNS42NTIuMzczLjY1Mi43OTQuNjUyIDEuNzE2di4xMDVjMCAuMzkxLS4wMzguNzM1LS4wOTggMS4wMzRhOC4wMDIgOC4wMDIgMCAwIDAtMy4xMDUtMTIuMzQxYy0uNTUzLjM3My0xLjMxMi45MDItMS41NzcgMS4yNjUtLjEzNS4xODUtLjMyNyAxLjEzMi0uOTUgMS4yMS0uMTYyLjAyLS4zODEuMDA2LS42MTMtLjAwOS0uNjIyLS4wNC0xLjQ3Mi0uMDk1LTEuNzQ0LjY0NC0uMTczLjQ2OC0uMjAzIDEuNzQuMzU2IDIuNC4wOS4xMDUuMTA3LjMuMDQ2LjUxOS0uMDguMjg3LS4yNDEuNDYyLS4yOTIuNDk4LS4wOTYtLjA1Ni0uMjg4LS4yNzktLjQxOS0uNDMtLjMxMy0uMzY1LS43MDUtLjgyLTEuMjExLS45Ni0uMTg0LS4wNTEtLjM4Ni0uMDkzLS41ODMtLjEzNS0uNTQ5LS4xMTUtMS4xNy0uMjQ2LTEuMzE1LS41NTQtLjEwNi0uMjI2LS4xMDUtLjUzNy0uMTA1LS44NjUgMC0uNDE3IDAtLjg4OC0uMjA0LTEuMzQ1YTEuMjc2IDEuMjc2IDAgMCAwLS4zMDYtLjQzek0xMiAyMkM2LjQ3NyAyMiAyIDE3LjUyMyAyIDEyUzYuNDc3IDIgMTIgMnMxMCA0LjQ3NyAxMCAxMC00LjQ3NyAxMC0xMCAxMHoiPjwvcGF0aD48L3N2Zz4=">
+						</button>
+						<button class="tab_button" id="tab_button_korea" onclick="tab_toggle('korea');">
+				        <img class="unit_Button_img" src="https://img.icons8.com/?size=100&id=-_RS8ho736Fs&format=png&color=000000">
+						</button>
+						<button class="tab_button" id="tab_button_myanmar" onclick="tab_toggle('myanmar');">
+				        <img class="unit_Button_img" src="https://img.icons8.com/?size=100&id=mdqlbmCXtG0X&format=png&color=000000">
+						</button>
+					</div>
+					<img class="tab_refresh" id="refresh_fetch" onclick="tab_refresh_FC()" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24tcmVmcmVzaC1vdXRsaW5lLTEiIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2U3ZDdhOCI+PGcgZGF0YS1uYW1lPSJMYXllciAyIj48cGF0aCBkPSJNMjAuMyAxMy40M2ExIDEgMCAwIDAtMS4yNS42NUE3LjE0IDcuMTQgMCAwIDEgMTIuMTggMTkgNy4xIDcuMSAwIDAgMSA1IDEyYTcuMSA3LjEgMCAwIDEgNy4xOC03IDcuMjYgNy4yNiAwIDAgMSA0LjY1IDEuNjdsLTIuMTctLjM2YTEgMSAwIDAgMC0xLjE1LjgzIDEgMSAwIDAgMCAuODMgMS4xNWw0LjI0LjdoLjE3YTEgMSAwIDAgMCAuMzQtLjA2LjMzLjMzIDAgMCAwIC4xLS4wNi43OC43OCAwIDAgMCAuMi0uMTFsLjA5LS4xMWMwLS4wNS4wOS0uMDkuMTMtLjE1czAtLjEuMDUtLjE0YTEuMzQgMS4zNCAwIDAgMCAuMDctLjE4bC43NS00YTEgMSAwIDAgMC0yLS4zOGwtLjI3IDEuNDVBOS4yMSA5LjIxIDAgMCAwIDEyLjE4IDMgOS4xIDkuMSAwIDAgMCAzIDEyYTkuMSA5LjEgMCAwIDAgOS4xOCA5QTkuMTIgOS4xMiAwIDAgMCAyMSAxNC42OGExIDEgMCAwIDAtLjctMS4yNVoiIGRhdGEtbmFtZT0icmVmcmVzaCIgc3R5bGU9ImZpbGw6IHJnYigyMzEsIDIxNSwgMTY4KTsiPjwvcGF0aD48L2c+PC9zdmc+">
+			</div>
+			<form class="message_delete_box_admin" id="message_admin_box">
+			    <input class="add_title_unit" type="password" id="deletePw_admin" placeholder="Password" required>
+			    <button class="unit_Button" type="submit">
+			        <img class="unit_Button_img" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2ZhZmFmYSIgY2xhc3M9ImJpIGJpLWNoZWNrLWxnIiB2aWV3Qm94PSIwIDAgMTYgMTYiIGlkPSJpY29uLWNoZWNrLWxnLTE0Ij48cGF0aCBkPSJNMTIuNzM2IDMuOTdhLjczMy43MzMgMCAwIDEgMS4wNDcgMGMuMjg2LjI4OS4yOS43NTYuMDEgMS4wNUw3Ljg4IDEyLjAxYS43MzMuNzMzIDAgMCAxLTEuMDY1LjAyTDMuMjE3IDguMzg0YS43NTcuNzU3IDAgMCAxIDAtMS4wNi43MzMuNzMzIDAgMCAxIDEuMDQ3IDBsMy4wNTIgMy4wOTMgNS40LTYuNDI1YS4yNDcuMjQ3IDAgMCAxIC4wMi0uMDIyWiI+PC9wYXRoPjwvc3ZnPg==">
+			    </button>
+			</form>
+		</div>
+	  <div class="add_top_line"></div>
+		 
+ 
+	
+		<div class="messageField" id="message-field">
+			<div class="messageContainer" id= "message-container">
+				<div class="messageContainer_spacer" >
+				<script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+		    <dotlottie-player src="https://lottie.host/dd09e5ac-3b8f-40fb-8c9c-69f1ce96a6d7/xtSWUSHzH3.json" background="transparent" speed="1" style="width: 100px; height: 100px;" loop autoplay></dotlottie-player>
+				</div>
+			</div>
+		</div>    
+    <div style="display:none;"id="data-container"></div>
+		
+		<div class="add_top_line"></div>
+		<form class="add_submit_form" id="addDataForm">
+		    <div class="add_move_trans" id="add_move_trans">
+				    <div class=" add_move_trans_unit" >
+						    <img class="add_icon_unit" id="add_icon_unit" onclick="add_icon_Function(0, 1)" src="https://img.icons8.com/?size=100&id=ksEiuzzBUfiP&format=png&color=000000">
+						    <input class="add_title_unit" type="text" id="add_name" placeholder="이름" required>       
+								<input class="add_title_unit" type="password" id="add_pw" placeholder="비밀번호" required>       
+				    </div>
+				    <textarea class="add_text_unit" onclick="add_Function()" id="add_title" placeholder="신랑·신부 에게 축하의 메세지를 남겨주세요!" required></textarea>
+		    </div>
+		    <button class="unit_Button" type="submit" >
+		        <!-- 버튼 내용 (아이콘 또는 텍스트) 추가 -->
+		        <img class="unit_Button_img" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24tcGFwZXItcGxhbmUtb3V0bGluZS0zIiB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIGZpbGw9IiNmZmZmZmYiPjxnIGRhdGEtbmFtZT0iTGF5ZXIgMiI+PHBhdGggZD0iTTIxIDRhMS4zMSAxLjMxIDAgMCAwLS4wNi0uMjd2LS4wOWExIDEgMCAwIDAtLjItLjMgMSAxIDAgMCAwLS4yOS0uMTloLS4wOWEuODYuODYgMCAwIDAtLjMxLS4xNUgyMGExIDEgMCAwIDAtLjMgMGwtMTggNmExIDEgMCAwIDAgMCAxLjlsOC41MyAyLjg0IDIuODQgOC41M2ExIDEgMCAwIDAgMS45IDBsNi0xOEExIDEgMCAwIDAgMjEgNFptLTQuNyAyLjI5LTUuNTcgNS41N0w1LjE2IDEwWk0xNCAxOC44NGwtMS44Ni01LjU3IDUuNTctNS41N1oiIGRhdGEtbmFtZT0icGFwZXItcGxhbmUiIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ij48L3BhdGg+PC9nPjwvc3ZnPg==">
+		    </button>
+		</form>
+
+	</div>
+</div>
+</div>
+
+<div class="add_icon_overlay" id="add_icon_overlay" onclick="add_icon_closs_Function()">
+		<div class="add_icon_overlay_box" id="add_icon_overlay_box">
+		<!-- 이미지박스 내용 (아이콘) 추가 -->
+		</div>
+</div>
+
+
+<div class="succese_overlay" id="animationPlayer_overlay">
+		 <dotlottie-player 
+				class=""
+        id="animationPlayer" 
+        src="https://lottie.host/966e8761-9871-4ce3-9505-15ab4f1eab2a/cNvpO2jEkZ.json" 
+        background="transparent" 
+        speed="1" 
+        style="width: 300px; height: 300px;" 
+        
+        >
+    </dotlottie-player>
+</div>
+
+<div class="succese_overlay_loding" id="animationPlayer_loding_overlay">
+		 <dotlottie-player 
+        id="animationPlayer_loding" 
+        src="https://lottie.host/623cc32b-8b9d-40f6-9a95-dbb9b16a3719/9TyzwYGGf9.json"
+        background="transparent" 
+        speed="1" 
+        style="width: 150px; height: 150px;" 
+        loop 
+        autoplay
+        >
+    </dotlottie-player>
+</div>
+
+<div class="succese_overlay" id="animationPlayer_update_overlay">
+		 <dotlottie-player 
+        id="animationPlayer_update" 
+        src="https://lottie.host/74aea6d6-0648-4069-a092-76ebd7b7528d/rIwud5XR5S.json"
+        background="transparent" 
+        speed="1" 
+        style="width: 300px; height: 300px;" 
+        
+        >
+    </dotlottie-player>
+</div>
+
+<div class="succese_overlay" id="animationPlayer_delete_overlay">
+		 <dotlottie-player 
+        id="animationPlayer_delete" 
+        src="https://lottie.host/03a5e25a-520c-4ca8-96ca-8d78c6a89bb1/BHvMfuitus.json"
+        background="transparent" 
+        speed="1" 
+        style="width: 100px; height: 100px;" 
+        >
+    </dotlottie-player>
+    
+</div>
+
+<script>
+
+$(function(){
+	$(document).one('click', '.like-review', function(e) {
+		$(this).html('<i class="fa fa-heart" aria-hidden="true"></i> You liked this');
+		$(this).children('.fa-heart').addClass('animate-like');
+	});
+});
+
+		                // 이미지 링크 배열 정의
+						const imageLinks_cntube = [
+						    "https://ifh.cc/g/Bmxzx9.jpg",
+						    "https://ifh.cc/g/3JrRGQ.jpg",
+						    "https://ifh.cc/g/fAPvzD.jpg",
+						    "https://ifh.cc/g/ZlwoP8.jpg",
+						    "https://ifh.cc/g/4cD13w.jpg",
+						    "https://ifh.cc/g/fQtpxd.jpg",
+						    "https://ifh.cc/g/RdSjrc.jpg",
+						    "https://ifh.cc/g/atdAQq.jpg",
+						    "https://ifh.cc/g/qWpf0f.jpg",
+						    "https://ifh.cc/g/mmA9Bq.jpg",
+						    "https://ifh.cc/g/tqbRGd.jpg",
+						    "https://ifh.cc/g/7Y0m9w.jpg"
+						];
+						
+						// 슬라이드쇼 컨테이너
+						const slideshowContainer = document.getElementById('slideshow-container');
+						
+						// 이미지 배열에서 각 이미지를 슬라이드에 추가
+						function slide_img() {
+						    for (let i = 0; i < imageLinks_cntube.length; i++) {
+						        const slideDiv = document.createElement('div');
+						        slideDiv.className = `slide`; // 첫 번째 슬라이드 활성화
+						        if(i==0){
+							        slideDiv.style.display='flex';
+						        }
+						        const imgElement = document.createElement('img');
+						        imgElement.src = imageLinks_cntube[i];
+						        slideDiv.appendChild(imgElement);
+						        slideshowContainer.appendChild(slideDiv);
+						    }
+						   
+						}
+						
+						// 현재 슬라이드 인덱스 설정
+							let currentSlideIndex = 0;
+							const slide_flesh = document.getElementById('slide_flesh');
+							
+							// 슬라이드 전환 함수
+							function changeSlide() {
+							    const slides = document.querySelectorAll('.slide');
+							    slides[currentSlideIndex].style.display = 'none'; // 현재 슬라이드 숨기기
+							    slide_flesh.style.backgroundColor = 'transparent'; // 투명 배경색 적용
+							    setTimeout(function() {
+							        slide_flesh.style.display = 'none';
+							        slide_flesh.style.backgroundColor = '#ffffff'; // 배경색 변경
+							        setTimeout(function() {
+							            slide_flesh.style.display = 'flex';
+							        }, 1450);
+							    }, 1500);
+							    
+							    currentSlideIndex = (currentSlideIndex + 1) % slides.length; // 인덱스 업데이트
+							    slides[currentSlideIndex].style.display = 'flex'; // 새로 활성화된 슬라이드 보이기
+							}
+							
+							// 자동 슬라이드 전환
+							function autoSlide() {
+							    changeSlide(); // 슬라이드 전환
+							    setTimeout(autoSlide, 3000); // 3초마다 자동으로 슬라이드 전환
+							}
+							
+													
+						// 자동 슬라이드 시작
+						setTimeout(function() {
+						    slide_img();
+						    autoSlide();
+						}, 100);
+						
+						
+				
+		const add_unit1 = document.getElementById('add_move_trans');
+    const add_unit2 = document.getElementById('addDataForm');
+    const add_unit3 = document.getElementById('add_title');
+    const add_icon_overlay = document.getElementById('add_icon_overlay');
+    const add_icon_overlay_box = document.getElementById('add_icon_overlay_box');
+    const add_icon_unit = document.getElementById('add_icon_unit');
+
+	    
+	  function add_icon_Function(j, k) {
+        add_icon_overlay.style.display = 'flex'; 
+        load_icon_img(j, k)
+    }  
+    
+    function add_icon_closs_Function() {
+        add_icon_overlay.style.display = 'none'; 
+    }  
+	    	
+    function add_Function() {
+		    update_aerial_close(add_Function_handle);
+        add_unit1.style.top = '5px '; 
+        add_unit1.style.transition = 'all 500 ease';
+        add_unit2.style.height = '101px';
+        add_unit3.style.height = '52px'; 
+        setTimeout(function() {
+					add_unit3.style.width = '87.549vw';
+	        add_unit3.style.maxWidth = '357.2px';
+				}, 500);
+        add_unit3.style.transition = 'width 1s ease-out,max-width 1s ease-out, height 1s ease';
+				add_icon_unit.src = icon_images[add_icon_img_num];
+        
+    }
+    
+    
+    
+    function add_Function_back() {
+        
+        add_unit3.style.width = '77.9901vw';
+        add_unit3.style.maxWidth = '313.2px';
+        setTimeout(function() {
+					add_unit1.style.top = '-34px '; 
+	        add_unit1.style.transition = 'all 500 ease-in';
+	        add_unit2.style.height = '44px';
+	        add_unit3.style.height = '34px'; 
+				}, 300);
+        add_unit3.style.transition = 'width 500 ease-out, max-width 500 ease-out, height 1s ease';
+    }
+    var add_Function_handle= 0;
+    
+    let isClickable = true;
+    let innerHeight = 0;
+    function update_aerial(i) {
+		    if (!isClickable) return; // 함수가 실행 불가능한 상태이면 종료
+		    update_aerial_close(i);
+    
+		    if(innerHeight==0){
+		    isClickable = false;
+		    add_Function_back();
+		    add_Function_handle = i;
+		    
+		    message_more_button_action();
+		    
+				const update_aerial_handle = document.getElementById("message_edit_box" + i);
+				const messageBox_aerial_handle = document.getElementById("massage_box" + i);
+				const close_botton_handle = document.getElementById("message_close_unit"+i);
+				
+				innerHeight = messageBox_aerial_handle.scrollHeight; // 내부 요소의 높이를 가져옴
+				 
+				close_botton_handle.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1jbG9zZS01IiBmaWxsPSIjZTdkN2E4Ij48cGF0aCBmaWxsPSIjZTdkN2E4IiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Im04IDYuNTg2IDQuMjQzLTQuMjQzIDEuNDE0IDEuNDE0TDkuNDE0IDhsNC4yNDMgNC4yNDMtMS40MTQgMS40MTRMOCA5LjQxNGwtNC4yNDMgNC4yNDMtMS40MTQtMS40MTRMNi41ODYgOCAyLjM0MyAzLjc1N2wxLjQxNC0xLjQxNHoiPjwvcGF0aD48L3N2Zz4='; 
+				
+				update_aerial_handle.style.zIndex= '101';
+				setTimeout(() => {
+						messageBox_aerial_handle.style.height = `${innerHeight + 101}px`; // 101px 추가 
+						setTimeout(() => {
+								update_aerial_handle.style.opacity= 1;
+								setTimeout(() => {
+					        isClickable = true;
+					message_more_button_action();
+						    }, 800); // 
+				    }, 100); // 
+		    }, 100); // 
+				}     
+    }
+// 수정된 부분:
+function update_aerial_close(i){
+    if (!isClickable) return; // 함수가 실행 불가능한 상태이면 종료
+    
+    if(innerHeight!=0){
+        isClickable = false;
+        i = add_Function_handle;
+        add_Function_handle=0;
+    
+        const update_aerial_handle = document.getElementById("message_edit_box" + i);
+        const delete_aerial_handle = document.getElementById("message_delete_box" + i);
+        const messageBox_aerial_handle = document.getElementById("massage_box" + i);
+        const close_botton_handle = document.getElementById("message_close_unit"+i);
+				const heart_aerial_handle = document.getElementById("message_heart_edit_box" + i);
+        
+        update_aerial_handle.style.opacity = 0;
+        delete_aerial_handle.style.opacity = 0;
+        heart_aerial_handle.style.opacity = 0;
+        
+        setTimeout(() => {
+            messageBox_aerial_handle.style.height = `${innerHeight}px`;
+            update_aerial_handle.style.zIndex = '-1';
+            delete_aerial_handle.style.zIndex = '-1';				
+            heart_aerial_handle.style.zIndex = '-1';				
+            setTimeout(() => {
+                close_botton_handle.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1jbG9zZS01IiBmaWxsPSIjZmZmZmZmIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Im04IDYuNTg2IDQuMjQzLTQuMjQzIDEuNDE0IDEuNDE0TDkuNDE0IDhsNC4yNDMgNC4yNDMtMS40MTQgMS40MTRMOCA5LjQxNGwtNC4yNDMgNC4yNDMtMS40MTQtMS40MTRMNi41ODYgOCAyLjM0MyAzLjc1N2wxLjQxNC0xLjQxNHoiPjwvcGF0aD48L3N2Zz4='; 
+
+                innerHeight = 0;
+                isClickable = true;
+                message_more_button_action();
+            }, 900);
+        }, 100);
+    }
+}
+    
+    function delete_aerial(i) {
+		    if (!isClickable) return; // 함수가 실행 불가능한 상태이면 종료
+		    update_aerial_close(i);
+    
+				if(innerHeight==0){
+				  isClickable = false;
+				  
+					add_Function_back();
+					add_Function_handle = i;
+										
+					const delete_aerial_handle = document.getElementById("message_delete_box" + i);
+					const messageBox_aerial_handle = document.getElementById("massage_box" + i);
+					const close_botton_handle = document.getElementById("message_close_unit"+i);
+					
+					innerHeight = messageBox_aerial_handle.scrollHeight; // 내부 요소의 높이를 가져옴
+					
+					delete_aerial_handle.style.zIndex= '101';
+					close_botton_handle.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1jbG9zZS01IiBmaWxsPSIjZTdkN2E4Ij48cGF0aCBmaWxsPSIjZTdkN2E4IiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Im04IDYuNTg2IDQuMjQzLTQuMjQzIDEuNDE0IDEuNDE0TDkuNDE0IDhsNC4yNDMgNC4yNDMtMS40MTQgMS40MTRMOCA5LjQxNGwtNC4yNDMgNC4yNDMtMS40MTQtMS40MTRMNi41ODYgOCAyLjM0MyAzLjc1N2wxLjQxNC0xLjQxNHoiPjwvcGF0aD48L3N2Zz4='; 
+					
+					setTimeout(() => {
+						messageBox_aerial_handle.style.height = `${innerHeight + 44}px`; //
+						setTimeout(() => {
+							delete_aerial_handle.style.opacity= 1;
+							setTimeout(() => {
+					        isClickable = true;
+					message_more_button_action();
+							}, 800); // 
+						}, 100); //
+					}, 100); // 
+					
+				} 
+	    }
+	
+	    function heart_aerial(i) {
+		    if (!isClickable) return; // 함수가 실행 불가능한 상태이면 종료
+		    update_aerial_close(i);
+    
+				if(innerHeight==0){
+				  isClickable = false;
+				  
+					add_Function_back();
+					add_Function_handle = i;
+										
+					const heart_aerial_handle = document.getElementById("message_heart_edit_box" + i);
+					const messageBox_aerial_handle = document.getElementById("massage_box" + i);
+					const close_botton_handle = document.getElementById("message_close_unit"+i);
+					
+					innerHeight = messageBox_aerial_handle.scrollHeight; // 내부 요소의 높이를 가져옴
+					
+					heart_aerial_handle.style.zIndex= '101';
+					close_botton_handle.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1jbG9zZS01IiBmaWxsPSIjZTdkN2E4Ij48cGF0aCBmaWxsPSIjZTdkN2E4IiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Im04IDYuNTg2IDQuMjQzLTQuMjQzIDEuNDE0IDEuNDE0TDkuNDE0IDhsNC4yNDMgNC4yNDMtMS40MTQgMS40MTRMOCA5LjQxNGwtNC4yNDMgNC4yNDMtMS40MTQtMS40MTRMNi41ODYgOCAyLjM0MyAzLjc1N2wxLjQxNC0xLjQxNHoiPjwvcGF0aD48L3N2Zz4='; 
+					
+					setTimeout(() => {
+						messageBox_aerial_handle.style.height = `${innerHeight + 78}px`; //
+						setTimeout(() => {
+							heart_aerial_handle.style.opacity= 1;
+							setTimeout(() => {
+					        isClickable = true;
+					message_more_button_action();
+							}, 800); // 
+						}, 100); //
+					}, 100); // 
+					
+				} 
+	    }
+	
+	 let delete_aerial_admin_toggle= 0;
+	 function delete_aerial_admin() {
+    if (!isClickable) return; // 함수가 실행 불가능한 상태이면 종료
+    
+    isClickable = false;
+    const delete_aerial_admin_handle = document.getElementById("message_admin_box");
+    
+    if (delete_aerial_admin_toggle == 0) {
+        delete_aerial_admin_handle.style.zIndex = '101';
+        setTimeout(() => {
+            delete_aerial_admin_handle.style.transform = 'translateY(44px)';
+            setTimeout(() => {
+                delete_aerial_admin_handle.style.opacity = 1;
+                setTimeout(() => {
+                    isClickable = true;
+                }, 800);
+            }, 100);
+        }, 100);
+        delete_aerial_admin_toggle = 1;
+    } else {
+        delete_aerial_admin_handle.style.zIndex = '-1';
+        setTimeout(() => {
+            delete_aerial_admin_handle.style.opacity = 0;
+            setTimeout(() => {
+                delete_aerial_admin_handle.style.transform = 'translateY(0px)';
+                setTimeout(() => {
+                    isClickable = true;
+                }, 800);
+            }, 100);
+        }, 100);
+        delete_aerial_admin_toggle = 0;
+    }
+}
+	    
+			const refresh_fetch = document.getElementById('refresh_fetch');
+	    
+	    let isClickable_refresh = true;
+	    function tab_refresh_FC(){
+	    	if (!isClickable_refresh) return; // 함수가 실행 불가능한 상태이면 종료
+				
+				isClickable_refresh = false;
+				
+				fetchData();
+				
+		    setTimeout(() => {
+					  isClickable_refresh = true;
+				}, 1000); // 
+	    }
+	    
+	    var Language= "korea";
+	    let isClickable_toggle = true;
+	    function tab_toggle(Language_inst){
+	         const glober_button_tab = document.getElementById('tab_button_glober');
+	         const korea_button_tab = document.getElementById('tab_button_korea');
+	         const myanmar_button_tab = document.getElementById('tab_button_myanmar');
+
+	         messageField.style.height = '300px';
+				   if(Language_inst === "glober"){
+				       
+						    for (let i = 0; i < Message_array.length; i++) {
+								    if(Message_array[i][0] === "1" || Message_array[i][0] === "2"){
+									    document.getElementById("massage_box" + i).style.display='flex';
+								    }else{
+									    document.getElementById("massage_box" + i).style.display='none';
+								    }
+							    }
+							    if(page_langage==1){
+					       document.getElementById("massage_box1").style.display='flex';
+				       }else{
+					       document.getElementById("massage_box0").style.display='flex';
+				       }
+							    
+							    glober_button_tab.style.background='#e7d7a8';
+							    korea_button_tab.style.background='#efefef';
+							    myanmar_button_tab.style.background='#efefef';
+							    
+							  }
+							  else if(Language_inst === "korea"){
+							   for (let i = 0; i < Message_array.length; i++) {
+								    if(Message_array[i][0]==="1"){
+									    document.getElementById("massage_box" + i).style.display='flex';
+								    }else{
+									    document.getElementById("massage_box" + i).style.display='none';
+								    }
+							    }
+					       document.getElementById("massage_box1").style.display='flex';
+							    
+							    glober_button_tab.style.background='#efefef';
+							    korea_button_tab.style.background='#e7d7a8';
+							    myanmar_button_tab.style.background='#efefef';
+							    
+
+		 				    }
+			 				  else if(Language_inst === "myanmar"){
+						        for (let i = 0; i < Message_array.length; i++) {
+						        		if(Message_array[i][0]==="2"){
+											    document.getElementById("massage_box" + i).style.display='flex';
+										    }else{
+											     document.getElementById("massage_box" + i).style.display='none';
+											    }
+								    }
+					       document.getElementById("massage_box0").style.display='flex';
+								    
+						    glober_button_tab.style.background='#efefef';
+						    korea_button_tab.style.background='#efefef';
+						    myanmar_button_tab.style.background='#e7d7a8';
+					   }
+							    createMessagefield_more();
+	    }
+
+let handle_messagefield_more = 0;
+function createMessagefield_more(){
+		let innerHeight = 0
+    innerHeight= messageContainer.scrollHeight;
+
+  
+    if(handle_messagefield_more == 0){
+    const Messagefield_more = document.createElement("div");
+        Messagefield_more.className = "message_more_cover";
+        Messagefield_more.id = "Messagefield_more";
+        Messagefield_more.onclick = () => message_more_button_action();
+        
+				// Create the delete button
+				    const Messagefield_more_button = document.createElement('img');
+				    Messagefield_more_button.className = 'message_more_cover_button';
+				    Messagefield_more_button.id = "Messagefield_more_button";
+						Messagefield_more_button.onclick = () => message_more_button_action();
+ 				    Messagefield_more_button.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2U3ZDdhOCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tZG93biIgdmlld0JveD0iMCAwIDE2IDE2IiBpZD0iaWNvbi1jaGV2cm9uLWRvd24tMzIiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTEuNjQ2IDQuNjQ2YS41LjUgMCAwIDEgLjcwOCAwTDggMTAuMjkzbDUuNjQ2LTUuNjQ3YS41LjUgMCAwIDEgLjcwOC43MDhsLTYgNmEuNS41IDAgMCAxLS43MDggMGwtNi02YS41LjUgMCAwIDEgMC0uNzA4eiI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string
+					
+		    const Messagefield_exit = document.createElement("div");
+				Messagefield_exit.className = "message_exit_button";
+				Messagefield_exit.id = "Messagefield_Exit";
+				Messagefield_exit.onclick = () => window.open("https://www.tokkitokki.kr/sctn_wedding_1229_reply", "_blank");
+				Messagefield_exit.style.textAlign = "right";
+				Messagefield_exit.textContent = "메시지 더보기 >>";
+       	messageContainer.appendChild(Messagefield_exit);
+	
+        // 버튼을 message_more_cover에 추가
+        Messagefield_more.appendChild(Messagefield_more_button);
+
+        // message_more_cover를 messageContainer에 추가
+        messageContainer.appendChild(Messagefield_more);
+        
+        
+        handle_messagefield_more= 1;
+        console.log("making"); // 확인용 출력 
+    }
+     var Messagefield_more_ID =document.getElementById("Messagefield_more");
+		 var Messagefield_more_button_ID =document.getElementById("Messagefield_more_button");
+		 var Messagefield_Exit_ID =document.getElementById("Messagefield_Exit");
+    
+      messageField.style.height = '300px';
+      Messagefield_more_ID.style.zIndex = '-1';
+      Messagefield_Exit_ID.style.zIndex = '-1';
+			innerHeight = messageContainer.scrollHeight; // 내부 요소의 높이를 가져옴
+			console.log(innerHeight); // 확인용 출력
+	    if(innerHeight >300){
+			    Messagefield_Exit_ID.style.zIndex = '102';
+		      Messagefield_more_ID.style.zIndex = '102';
+	        Messagefield_more_ID.style.top = '300px';
+	        Messagefield_more_ID.style.height = '112.5px';
+	        Messagefield_more_ID.style.opacity = '1';
+		      Messagefield_Exit_ID.style.opacity = '1';
+	        Messagefield_more_button_ID.style.transform = 'translateY(0%)';
+			  }
+			  else{
+				  Messagefield_more_ID.style.opacity = '0';
+		      Messagefield_Exit_ID.style.opacity = '0';
+			  }
+		
+
+}
+
+
+function message_more_button_action(){
+
+const Messagefield_more_ID = document.getElementById("Messagefield_more");
+    const Messagefield_more_button_ID = document.getElementById("Messagefield_more_button");
+     
+			    messageField.style.height = `${messageContainer.offsetHeight}px`;
+			    Messagefield_more_ID.style.height = '0px';
+			    Messagefield_more_ID.style.top = '100%';
+
+			    Messagefield_more_ID.style.opacity = '0';
+			    Messagefield_more_button_ID.style.transform = 'translateY(200%)';
+			
+}
+
+//message 박스 추가 함수
+function createMessageBox(i , id, DATE, lag, Name, Title, icon, reply, like) {
+    const messageBox = document.createElement("div");
+    messageBox.className = "massage_box";
+    messageBox.id = "massage_box" + i;
+    
+    // message_edit_box
+    const messageEditBox = document.createElement("form");
+    messageEditBox.className = "message_edit_box";
+    messageEditBox.id = "message_edit_box" + i;
+    
+    // message_edit_title_box
+    const messageEditTitleBox = document.createElement("div");
+    messageEditTitleBox.className = "message_edit_title_box";
+
+    const updateIconUnit = document.createElement("img");
+    updateIconUnit.className = "add_icon_unit";
+    updateIconUnit.id = "update_icon_unit"+ i;
+    updateIconUnit.src = icon_images[icon];
+    updateIconUnit.onclick = function() { add_icon_Function(1, i); };
+    messageEditTitleBox.appendChild(updateIconUnit);
+
+    const updateTitleInput = document.createElement("input");
+    updateTitleInput.className = "update_title_unit";
+    updateTitleInput.type = "text";
+    updateTitleInput.id = "updateName"+i;
+    updateTitleInput.placeholder = "이름";
+    updateTitleInput.value= Name;
+    updateTitleInput.required = true;
+    messageEditTitleBox.appendChild(updateTitleInput);
+
+    const updatePwInput = document.createElement("input");
+    updatePwInput.className = "update_title_unit";
+    updatePwInput.type = "password";
+    updatePwInput.id = "updatePw"+i;
+    updatePwInput.placeholder = "비밀번호";
+    updatePwInput.required = true;
+    messageEditTitleBox.appendChild(updatePwInput);
+
+    const updateButton = document.createElement("button");
+    updateButton.className = "update_unit_Button";
+    updateButton.type = "submit";
+
+    const updateButtonImg = document.createElement("img");
+    updateButtonImg.className = "update_unit_Button_img";
+    updateButtonImg.src = "data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2ZhZmFmYSIgY2xhc3M9ImJpIGJpLXZlY3Rvci1wZW4iIHZpZXdCb3g9IjAgMCAxNiAxNiIgaWQ9Imljb24tdmVjdG9yLXBlbi0xMyI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMTAuNjQ2LjY0NmEuNS41IDAgMCAxIC43MDggMGw0IDRhLjUuNSAwIDAgMSAwIC43MDhsLTEuOTAyIDEuOTAyLS44MjkgMy4zMTNhMS41IDEuNSAwIDAgMS0xLjAyNCAxLjA3M0wxLjI1NCAxNC43NDYgNC4zNTggNC40QTEuNSAxLjUgMCAwIDEgNS40MyAzLjM3N2wzLjMxMy0uODI4TDEwLjY0Ni42NDZ6bS0xLjggMi45MDgtMy4xNzMuNzkzYS41LjUgMCAwIDAtLjM1OC4zNDJsLTIuNTcgOC41NjUgOC41NjctMi41N2EuNS41IDAgMCAwIC4zNC0uMzU3bC43OTQtMy4xNzQtMy42LTMuNnoiPjwvcGF0aD48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjgzMiAxMy4yMjggOCA5YTEgMSAwIDEgMC0xLTFsLTQuMjI4IDUuMTY4LS4wMjYuMDg2LjA4Ni0uMDI2eiI+PC9wYXRoPjwvc3ZnPg==";
+    updateButton.appendChild(updateButtonImg);
+    messageEditTitleBox.appendChild(updateButton);
+
+    messageEditBox.appendChild(messageEditTitleBox);
+
+    // Textarea for the message
+    const updateTextUnit = document.createElement("textarea");
+    updateTextUnit.className = "update_text_unit";
+    updateTextUnit.id = "updateTitle"+i;
+    updateTextUnit.placeholder = "신랑·신부 에게 축하의 메세지를 남겨주세요!";
+    updateTextUnit.value= Title;
+    updateTextUnit.required = true;
+    messageEditBox.appendChild(updateTextUnit);
+
+    messageBox.appendChild(messageEditBox);
+
+		// message_delete_box
+    const messageDeleteBox = document.createElement("form");
+    messageDeleteBox.className = "message_delete_box";
+    messageDeleteBox.id = "message_delete_box" + i;
+
+    const deletePwInput = document.createElement("input");
+    deletePwInput.className = "add_title_unit";
+    deletePwInput.type = "password";
+    deletePwInput.id = "deletePw" +i;
+    deletePwInput.placeholder = "비밀번호";
+    deletePwInput.required = true;
+    messageDeleteBox.appendChild(deletePwInput);
+
+		const deleteButtonSubmit = document.createElement("button");
+    deleteButtonSubmit.className = "unit_Button";
+    deleteButtonSubmit.type = "submit";
+
+    const deleteButtonImg = document.createElement("img");
+    deleteButtonImg.className = "unit_Button_img";
+    deleteButtonImg.src = "data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1vcC1kZWxldGUtMCIgZmlsbD0iI2ZhZmFmYSI+PHBhdGggZD0iTTMgMTMuMTdDMyAxNC4xOCAzLjgyIDE1IDQuODMgMTVoNi4zM0ExLjg1IDEuODUgMCAwIDAgMTMgMTMuMTZWNkgzdjcuMTdaTTE0IDNoLTJsLTEtMkg1TDQgM0gydjJoMTJWM1oiIGZpbGw9IiNmYWZhZmEiIGZpbGwtcnVsZT0ibm9uemVybyI+PC9wYXRoPjwvc3ZnPg==";
+    deleteButtonSubmit.appendChild(deleteButtonImg);
+    messageDeleteBox.appendChild(deleteButtonSubmit);
+
+    messageBox.appendChild(messageDeleteBox);
+    
+    // message_heart_edit_box
+    const messageHeartEditBox = document.createElement("form");
+    messageHeartEditBox.className = "message_heart_edit_box";
+    messageHeartEditBox.id = "message_heart_edit_box" + i;
+
+    const heartEditTextUnit = document.createElement("textarea");
+    heartEditTextUnit.className = "update_text_unit";
+    heartEditTextUnit.id = "heartEditTitle"+i;
+    heartEditTextUnit.placeholder = "덧글달아주세염";
+    heartEditTextUnit.value= reply;
+    messageHeartEditBox.appendChild(heartEditTextUnit);
+
+		const heartEditButtonSubmit = document.createElement("button");
+    heartEditButtonSubmit.className = "unit_Button";
+    heartEditButtonSubmit.type = "submit";
+
+    const heartEditButtonImg = document.createElement("img");
+    heartEditButtonImg.className = "unit_Button_img";
+    heartEditButtonImg.src = "data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24tcGFwZXItcGxhbmUtb3V0bGluZS0zIiB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIGZpbGw9IiNmZmZmZmYiPjxnIGRhdGEtbmFtZT0iTGF5ZXIgMiI+PHBhdGggZD0iTTIxIDRhMS4zMSAxLjMxIDAgMCAwLS4wNi0uMjd2LS4wOWExIDEgMCAwIDAtLjItLjMgMSAxIDAgMCAwLS4yOS0uMTloLS4wOWEuODYuODYgMCAwIDAtLjMxLS4xNUgyMGExIDEgMCAwIDAtLjMgMGwtMTggNmExIDEgMCAwIDAgMCAxLjlsOC41MyAyLjg0IDIuODQgOC41M2ExIDEgMCAwIDAgMS45IDBsNi0xOEExIDEgMCAwIDAgMjEgNFptLTQuNyAyLjI5LTUuNTcgNS41N0w1LjE2IDEwWk0xNCAxOC44NGwtMS44Ni01LjU3IDUuNTctNS41N1oiIGRhdGEtbmFtZT0icGFwZXItcGxhbmUiIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ij48L3BhdGg+PC9nPjwvc3ZnPg==";
+    heartEditButtonSubmit.appendChild(heartEditButtonImg);
+    messageHeartEditBox.appendChild(heartEditButtonSubmit);
+
+    messageBox.appendChild(messageHeartEditBox);
+
+		// message_heart_box
+    const messageheartBox = document.createElement("div");
+    messageheartBox.className = "massage_box_heart";
+    if(reply===""){
+	    messageheartBox.style.display="none";
+    }
+    messageheartBox.id = "message_heart_box" + i;
+
+		// message_Hearticon_unit
+    const messageHeartIconUnit = document.createElement("img");
+    messageHeartIconUnit.className = "message_icon_unit";
+    messageHeartIconUnit.src = "https://img.icons8.com/?size=100&id=2LtrYXjQi614&format=png&color=000000";
+    messageheartBox.appendChild(messageHeartIconUnit);
+		
+		 // Create the Heart main message box
+    const messageHeartTextBox = document.createElement('div');
+    messageHeartTextBox.className = 'massage_text_box';
+		
+		// Create the Heart title box
+    const massageHeartTileBox = document.createElement('div');
+    massageHeartTileBox.className = 'massage_tile_box';
+
+    // Create the Heart name box
+    const massageHeartNameBox = document.createElement('div');
+    massageHeartNameBox.className = 'massage_name_box';
+    if(page_langage== 1){
+    massageHeartNameBox.textContent = "시찬♥누이";
+		}else{
+		    massageHeartNameBox.textContent = "SiChan♥Nway";
+		}
+		
+    // Append name and date boxes to the title box
+    massageHeartTileBox.appendChild(massageHeartNameBox);
+    messageHeartTextBox.appendChild(massageHeartTileBox); //messageTextBox
+
+    // Create the main Heart content box
+    const massageHeartMainBox = document.createElement('div');
+    massageHeartMainBox.className = 'massage_main_box';
+    massageHeartMainBox.id= "message_heart_title_unit"+i;
+    massageHeartMainBox.textContent = reply;
+    messageHeartTextBox.appendChild(massageHeartMainBox); //messageTextBox
+    messageheartBox.appendChild(messageHeartTextBox);
+
+    // message_icon_unit
+    const messageIconUnit = document.createElement("img");
+    messageIconUnit.className = "message_icon_unit";
+    messageIconUnit.id = "message_icon_unit"+i;
+    if(lag === "0"){
+        messageIconUnit.src = "https://img.icons8.com/?size=100&id=2LtrYXjQi614&format=png&color=000000";
+    }else{
+    messageIconUnit.src = icon_images[icon];
+    }
+    messageBox.appendChild(messageIconUnit);
+    
+     // Create the main message box
+    const messageTextBox = document.createElement('div');
+    messageTextBox.className = 'massage_text_box';
+    messageTextBox.id = "message_text_box_unit"+i;
+
+    // Create the title box
+    const massageTileBox = document.createElement('div');
+    massageTileBox.className = 'massage_tile_box';
+
+    // Create the name box
+    const massageNameBox = document.createElement('div');
+    massageNameBox.className = 'massage_name_box';
+    massageNameBox.textContent = Name;
+
+    // Create the date box
+    const massageDateBox = document.createElement('div');
+    massageDateBox.className = 'massage_date_box';
+    massageDateBox.textContent = DATE;
+
+    // Append name and date boxes to the title box
+    massageTileBox.appendChild(massageNameBox);
+    massageTileBox.appendChild(massageDateBox);
+    messageTextBox.appendChild(massageTileBox); //messageTextBox
+
+    // Create the main content box
+    const massageMainBox = document.createElement('div');
+    massageMainBox.className = 'massage_main_box';
+    massageMainBox.textContent = Title;
+    messageTextBox.appendChild(massageMainBox); //messageTextBox
+
+    // Create the button box
+    const massageButtonBox = document.createElement('div');
+    massageButtonBox.className = 'massage_button_box';
+    if(lag === "0"){
+				massageButtonBox.style.display='none';
+    }
+    
+    // Create the update button
+    const updateButtonimg = document.createElement('img');
+    updateButtonimg.className = 'masseage_button_unit';
+    updateButtonimg.onclick = () => update_aerial(i); // Replace with your function
+    updateButtonimg.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2NkY2RjZCIgY2xhc3M9ImJpIGJpLXZlY3Rvci1wZW4iIHZpZXdCb3g9IjAgMCAxNiAxNiIgaWQ9Imljb24tdmVjdG9yLXBlbi0xMyI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMTAuNjQ2LjY0NmEuNS41IDAgMCAxIC43MDggMGw0IDRhLjUuNSAwIDAgMSAwIC43MDhsLTEuOTAyIDEuOTAyLS44MjkgMy4zMTNhMS41IDEuNSAwIDAgMS0xLjAyNCAxLjA3M0wxLjI1NCAxNC43NDYgNC4zNTggNC40QTEuNSAxLjUgMCAwIDEgNS40MyAzLjM3N2wzLjMxMy0uODI4TDEwLjY0Ni42NDZ6bS0xLjggMi45MDgtMy4xNzMuNzkzYS41LjUgMCAwIDAtLjM1OC4zNDJsLTIuNTcgOC41NjUgOC41NjctMi41N2EuNS41IDAgMCAwIC4zNC0uMzU3bC43OTQtMy4xNzQtMy42LTMuNnoiPjwvcGF0aD48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjgzMiAxMy4yMjggOCA5YTEgMSAwIDEgMC0xLTFsLTQuMjI4IDUuMTY4LS4wMjYuMDg2LjA4Ni0uMDI2eiI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string
+    massageButtonBox.appendChild(updateButtonimg);
+    
+    // Create the delete button
+    const deleteButton = document.createElement('img');
+    deleteButton.className = 'masseage_button_unit';
+    deleteButton.onclick = () => delete_aerial(i); // Replace with your function
+    deleteButton.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1vcC1kZWxldGUtMCIgZmlsbD0iI2NkY2RjZCI+PHBhdGggZD0iTTMgMTMuMTdDMyAxNC4xOCAzLjgyIDE1IDQuODMgMTVoNi4zM0ExLjg1IDEuODUgMCAwIDAgMTMgMTMuMTZWNkgzdjcuMTdaTTE0IDNoLTJsLTEtMkg1TDQgM0gydjJoMTJWM1oiIGZpbGw9IiNmYWZhZmEiIGZpbGwtcnVsZT0ibm9uemVybyI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string
+		massageButtonBox.appendChild(deleteButton);
+		
+    // Create the heart button
+    const heartButton = document.createElement('img');
+    heartButton.className = 'masseage_button_unit';
+    heartButton.id = "message_heart_unit"+i;
+    if(like===""){
+		    heartButton.onclick = () => heart_aerial(i); // Replace with your function
+		    heartButton.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24taGVhcnRzLWZpbGwtMzAiIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2NjZGRjYyI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNy4zNjMgMTEuMDQ1YTMuNjE1IDMuNjE1IDAgMCAxIDUuMDg0IDAgMy41NSAzLjU1IDAgMCAxIDAgNS4wNDdMMTcgMjEuNWwtNS40NDctNS40MDhhMy41NSAzLjU1IDAgMCAxIDAtNS4wNDcgMy42MTUgMy42MTUgMCAwIDEgNS4wODQgMGwuMzYzLjM2LjM2My0uMzZ6bTEuODgtNi4yODhhNS45OTUgNS45OTUgMCAwIDEgMS42ODkgMy4zMzhBNS42MTMgNS42MTMgMCAwIDAgMTcgOC44MDhhNS42MTcgNS42MTcgMCAwIDAtNi44NTYuODE4IDUuNTUgNS41NSAwIDAgMC0uMTc4IDcuNzAxbC4xNzguMTg1IDIuNDIxIDIuNDA0TDExIDIxLjQ4NWwtOC40OC04LjQ5MmE2IDYgMCAwIDEgOC40ODEtOC40NjQgNS45OTggNS45OTggMCAwIDEgOC4yNDIuMjI4eiI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string
+				heartButton.style.display='none';
+		}else{
+		    heartButton.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24taGVhcnRzLWZpbGwtMzAiIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2U5MWU2MyI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNy4zNjMgMTEuMDQ1YTMuNjE1IDMuNjE1IDAgMCAxIDUuMDg0IDAgMy41NSAzLjU1IDAgMCAxIDAgNS4wNDdMMTcgMjEuNWwtNS40NDctNS40MDhhMy41NSAzLjU1IDAgMCAxIDAtNS4wNDcgMy42MTUgMy42MTUgMCAwIDEgNS4wODQgMGwuMzYzLjM2LjM2My0uMzZ6bTEuODgtNi4yODhhNS45OTUgNS45OTUgMCAwIDEgMS42ODkgMy4zMzhBNS42MTMgNS42MTMgMCAwIDAgMTcgOC44MDhhNS42MTcgNS42MTcgMCAwIDAtNi44NTYuODE4IDUuNTUgNS41NSAwIDAgMC0uMTc4IDcuNzAxbC4xNzguMTg1IDIuNDIxIDIuNDA0TDExIDIxLjQ4NWwtOC40OC04LjQ5MmE2IDYgMCAwIDEgOC40ODEtOC40NjQgNS45OTggNS45OTggMCAwIDEgOC4yNDIuMjI4eiI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string
+		}
+		massageButtonBox.appendChild(heartButton);
+				
+		// Create the close button
+    const editing_close_img = document.createElement('img');
+    editing_close_img.className = 'masseage_button_unit';
+    editing_close_img.id = "message_close_unit"+i;
+    editing_close_img.onclick = () => update_aerial_close(i); // Replace with your function
+    editing_close_img.src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iaWNvbi1jbG9zZS01IiBmaWxsPSIjZmZmZmZmIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Im04IDYuNTg2IDQuMjQzLTQuMjQzIDEuNDE0IDEuNDE0TDkuNDE0IDhsNC4yNDMgNC4yNDMtMS40MTQgMS40MTRMOCA5LjQxNGwtNC4yNDMgNC4yNDMtMS40MTQtMS40MTRMNi41ODYgOCAyLjM0MyAzLjc1N2wxLjQxNC0xLjQxNHoiPjwvcGF0aD48L3N2Zz4='; // Use the actual base64 string
+    massageButtonBox.appendChild(editing_close_img);
+		
+    messageTextBox.appendChild(massageButtonBox);
+		messageTextBox.appendChild(messageheartBox);
+
+		messageBox.appendChild(messageTextBox);
+		
+		
+    return messageBox;
+    
+}
+
+
+
+// 사용 예시
+const messageContainer = document.getElementById('message-container'); // 데이터를 추가할 컨테이너
+const messageField = document.getElementById('message-field'); // 데이터를 추가할 컨테이너
+
+    
+var icon_images = [
+"https://img.icons8.com/?size=100&id=VBEgWsr-h2pI&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=nQGGkYzYM8oU&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=qrnbt4bAMdkQ&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=ksEiuzzBUfiP&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=w47a8-lntmBJ&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=bMlfbAZNpJFQ&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=tGQ306B1f88n&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=CK32EXjR0Zn3&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=77FLPGtzKUyN&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=3VEpwjkMC6RJ&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=pk4GSqlxkW22&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=tgLepcPbp6mP&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=I6VLjzP2zwQR&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=124062&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=114919&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=FDx92ZIFwxXX&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=ww_THksfIJqe&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=ktM3j7rXf-Nq&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=u1DfF_3GImaG&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=JNiVZDX3HQ2K&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=QP6s6G1sGtV1&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=fdx5D7ld8A_E&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=7DVuf8sOoX--&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=mvlchoJ6L0aG&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=NaTvyBbhmtpx&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=5qhbwcEMWrxF&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=cnruVfq4z34Y&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=ET4shyBDKZGA&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=CGO6NvimKpxz&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=3HDW4treqjs2&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=cdN2PXUEEvCE&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=Wt_lHBntmvDm&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=tQhSj4VoysKm&format=png&color=000000",
+"https://img.icons8.com/?size=100&id=6A1LT0msSQiP&format=png&color=000000"
+                ];
+		var add_icon_img_num = Math.floor(Math.random() * icon_images.length);
+		function load_icon_img(j, k) {
+										add_icon_overlay_box.innerHTML = ''; // 기존 내용 초기화
+										
+                    for (let i = icon_images.length - 1; i > 0; i--) {
+                        const img2 = document.createElement('img');
+                        img2.src = icon_images[i];
+                        img2.classList.add('add_icon_unit'); // 클래스 추가
+                        img2.addEventListener('click', () => {
+                            add_icon_overlay.style.display = 'none'; 
+                            
+                            
+                            let icon_select_handle = 0;
+                            if(j === 0){
+	                             icon_select_handle = document.getElementById('add_icon_unit');
+	                             add_icon_img_num = i;
+		                           
+	                             
+                            }else{
+	                             icon_select_handle = document.getElementById("update_icon_unit"+ k);
+	                             Message_array[k][4] = i;
+		                        
+                            }
+														
+													  icon_select_handle.src = icon_images[i];
+
+		                    });
+		                    add_icon_overlay_box.appendChild(img2);
+           }
+		 }
+
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+};
+
+const getCurrentKoreanDate = () => {
+    const now = new Date();
+    const offset = 9 * 60; // KST는 UTC+9
+    const utcDate = now.getTime() + (now.getTimezoneOffset() * 60000); // UTC 시간
+    const koreanDate = new Date(utcDate + (offset * 60000)); // KST로 변환
+    return koreanDate.toISOString(); // ISO 형식으로 반환
+};
+
+async function fetchData() {
+		refresh_fetch.classList.toggle('rotate-animation');
+    try {
+        const response = await fetch('https://kschost.ddns.net/wedding/api/data'); // API URL 변경
+        const data = await response.json();
+        console.log(data); // 확인용 출력
+
+        const container = document.getElementById('data-container');
+        container.innerHTML = ''; // 기존 내용 초기화
+        
+        // DATE 속성을 기준으로 내림차순 정렬
+				data.sort((a, b) => new Date(b.DATE) - new Date(a.DATE));
+
+				refresh_fetch.classList.toggle('rotate-animation');
+        // 3차원 배열 생성
+        const Message_array = create3DArray(data);
+        console.log(Message_array); // 확인용 출력
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+var Message_array= [];
+
+// 배열을 생성하는 함수
+function create3DArray(data) {
+    Message_array = []; // Message_array 초기화
+    let kor_num = 0;
+    let mm_num = 0;
+    messageContainer.innerHTML = ''; // 기존 내용 초기화
+
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        const itemDATE = formatDate(item.DATE);
+				Message_array[i]= [];
+        if (item.lag === "1") {
+            Message_array[i][0] = item.lag;
+            Message_array[i][1] = item.id;
+            Message_array[i][2] = item.Name;
+            Message_array[i][3] = item.Title;
+            Message_array[i][4] = item.icon;
+            Message_array[i][5] = itemDATE;
+            Message_array[i][6] = String(kor_num);
+            Message_array[i][7] = item.reply;
+            Message_array[i][8] = item.like;
+            kor_num++;
+        } else {
+            Message_array[i][0] = item.lag;
+            Message_array[i][1] = item.id;
+            Message_array[i][2] = item.Name;
+            Message_array[i][3] = item.Title;
+            Message_array[i][4] = item.icon;
+            Message_array[i][5] = itemDATE;
+            Message_array[i][6] = String(mm_num);
+            Message_array[i][7] = item.reply;
+            Message_array[i][8] = item.like;
+            mm_num++;
+        }
+        
+        
+				const messageBox = createMessageBox(i, Message_array[i][1], Message_array[i][5], Message_array[i][0], Message_array[i][2], Message_array[i][3],Message_array[i][4], Message_array[i][7], Message_array[i][8]);
+        messageContainer.appendChild(messageBox);
+        
+        delete_date_Fc(i);
+        update_date_Fc(i);
+        heart_date_Fc(i);
+        handle_messagefield_more = 0;
+        
+        }
+        
+		  tab_toggle(Language);
+
+    return Message_array;
+}
+
+			//언어변수
+			var page_langage = 1;
+			
+      const animationPlayer_loding = document.getElementById('animationPlayer_loding');
+		  const animationPlayer_loding_overlay = document.getElementById('animationPlayer_loding_overlay');
+      const animationPlayer_update = document.getElementById('animationPlayer_update');
+		  const animationPlayer_update_overlay = document.getElementById('animationPlayer_update_overlay');
+      const animationPlayer_delete = document.getElementById('animationPlayer_delete');
+		  const animationPlayer_delete_overlay = document.getElementById('animationPlayer_delete_overlay');
+		  
+		  		  
+			//add함수
+			document.getElementById('addDataForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // 폼 제출 시 페이지 리프레시 방지
+						const currentDate = getCurrentKoreanDate(); // 현재 날짜 계산 함수
+						 // 문서가 로드되면 애니메이션 표시
+					  animationPlayer_loding.style.display = 'block'; // 애니메이션을 보이도록 설정
+					  animationPlayer_loding_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+	
+            const name = document.getElementById('add_name').value;
+            const title = document.getElementById('add_title').value;
+            const lag = String(page_langage);
+            const icon = String(add_icon_img_num);
+            const pw = document.getElementById('add_pw').value;
+            const date = currentDate;
+						
+						// 전송될 데이터 확인을 위한 로그
+        const requestData = { name, title, lag, icon, pw, date };
+        console.log('전송할 데이터:', JSON.stringify(requestData)); // 데이터 로그 출력
+        				     
+        
+            try {
+                const response = await fetch('https://kschost.ddns.net/wedding/api/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const newData = await response.json();
+                    // DATE 속성을 기준으로 내림차순 정렬
+										newData.sort((a, b) => new Date(b.DATE) - new Date(a.DATE));
+										                    
+                    const container = document.getElementById('data-container');
+						        container.innerHTML = ''; // 기존 내용 초기화';
+						        
+				            const animationPlayer = document.getElementById('animationPlayer');
+				            const animationPlayer_overlay = document.getElementById('animationPlayer_overlay');
+
+									animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					        // 문서가 로드되면 애니메이션 표시
+					        animationPlayer.style.display = 'block'; // 애니메이션을 보이도록 설정
+					        animationPlayer_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+									animationPlayer.play();
+                    
+                    // 데이터 추가 성공 시 입력 필드 클리어
+				            document.getElementById('add_name').value = '';
+				            document.getElementById('add_title').value = '';
+				            document.getElementById('add_pw').value = ''; 
+				            
+					          add_Function_back();
+
+											 scrollTo_menu_top("chatroom");
+										    setTimeout(function() {
+											 // 문서가 로드되면 애니메이션 표시
+											 animationPlayer.stop();
+							        animationPlayer.style.display = 'none'; // 애니메이션을 보이도록 설정
+							        animationPlayer_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					        									    }, 2000); // 3000 milliseconds = 3 seconds
+
+						        // 3차원 배열 생성
+										Message_array = create3DArray(newData);
+										console.log(Message_array); // 확인용 출력
+                } else {
+		                alert("메시지 추가 실패");
+                    throw new Error('데이터 추가 실패: ' + response.status);
+                }
+            } catch (error) {
+		            alert("메시지 서버 통신 오류");
+                document.getElementById('data-container').innerText = error.message;
+            }
+        });
+				
+				
+				// 삭제 함수
+				function delete_date_Fc(i){
+				document.getElementById("message_delete_box" + i).addEventListener('submit', async (event) => {
+				
+            event.preventDefault(); // 폼 제출 시 페이지 리프레시 방지
+						const currentDate = getCurrentKoreanDate(); // 현재 날짜 계산 함수
+						// 문서가 로드되면 애니메이션 표시
+					  animationPlayer_loding.style.display = 'block'; // 애니메이션을 보이도록 설정
+					  animationPlayer_loding_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+	
+            const id = Message_array[i][1];
+            const pw = document.getElementById("deletePw" +i).value;
+            const name = "";
+            const title = "";
+            const icon = "";
+            const date = "";
+            const Num = "delete";
+						
+						// 전송될 데이터 확인을 위한 로그
+        const requestData = { id , pw, name, title ,icon, date, Num};
+        console.log('전송할 데이터:', JSON.stringify(requestData)); // 데이터 로그 출력
+        
+        try {
+                const response = await fetch('https://kschost.ddns.net/wedding/api/data', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const newData = await response.json();
+										newData.sort((a, b) => new Date(b.DATE) - new Date(a.DATE));
+                    console.log(newData); // 확인용 출력
+                    
+                    const container = document.getElementById('data-container');
+						        container.innerHTML = ''; // 기존 내용 초기화';
+                    
+				          animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    
+							    animationPlayer_delete.style.display = 'block'; // 애니메이션을 보이도록 설정
+					        animationPlayer_delete_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+									animationPlayer_delete.play();
+													            
+											 scrollTo_menu_top("chatroom");
+													            
+				            setTimeout(function() {
+
+											 // 문서가 로드되면 애니메이션 표시
+											 animationPlayer_delete.stop();
+							        animationPlayer_delete.style.display = 'none'; // 애니메이션을 보이도록 설정
+							        animationPlayer_delete_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					        									    }, 2000); // 3000 milliseconds = 3 seconds
+				            
+				             // 3차원 배열 생성
+										Message_array = create3DArray(newData);
+										console.log(Message_array); // 확인용 출력
+
+                } else {
+                    animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    
+                    alert("메시지 삭제 실패");
+                    throw new Error('데이터 삭제 실패: ' + response.status);
+                }
+            } catch (error) {
+                alert("메시지 서버 통신 실패");
+                document.getElementById('data-container').innerText = error.message;
+            }
+        });
+        }
+        
+    //update함수
+      function update_date_Fc(i){
+			document.getElementById("message_edit_box" + i).addEventListener('submit', async (event) => {
+            event.preventDefault(); // 폼 제출 시 페이지 리프레시 방지
+						const currentDate = getCurrentKoreanDate(); // 현재 날짜 계산 함수
+						
+						// 문서가 로드되면 애니메이션 표시
+					  animationPlayer_loding.style.display = 'block'; // 애니메이션을 보이도록 설정
+					  animationPlayer_loding_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+	
+						const id = Message_array[i][1];
+	          const name = document.getElementById("updateName"+i).value;
+            const title = document.getElementById("updateTitle"+i).value;
+            const icon = String(Message_array[i][4]);
+            const pw = document.getElementById("updatePw"+i).value;
+            const date = currentDate;
+            const Num = "update";
+						
+						// 전송될 데이터 확인을 위한 로그
+		        const requestData = { id, name, title, icon, pw, date ,Num};
+		        console.log('전송할 데이터:', JSON.stringify(requestData)); // 데이터 로그 출력
+        
+            try {
+                const response = await fetch('https://kschost.ddns.net/wedding/api/data', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const newData = await response.json();
+										newData.sort((a, b) => new Date(b.DATE) - new Date(a.DATE));
+                    console.log(newData); // 확인용 출력
+
+                    const container = document.getElementById('data-container');
+						        container.innerHTML = ''; // 기존 내용 초기화';
+						        
+				            animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                    
+				            animationPlayer_update.style.display = 'block'; // 애니메이션을 보이도록 설정
+					        animationPlayer_update_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+									animationPlayer_update.play();
+									
+											 scrollTo_menu_top("chatroom");
+									
+									setTimeout(function() {
+											 // 문서가 로드되면 애니메이션 표시
+											 animationPlayer_update.stop();
+							        animationPlayer_update.style.display = 'none'; // 애니메이션을 보이도록 설정
+							        animationPlayer_update_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					        									    }, 1000); // 3000 milliseconds = 3 seconds
+									
+                    // 3차원 배열 생성
+										Message_array = create3DArray(newData);
+										console.log(Message_array); // 확인용 출력
+                    
+                } else {
+                animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                
+		                alert("메시지 수정 실패");
+                    throw new Error('데이터 수정 실패: ' + response.status);
+                }
+            } catch (error) {
+		            alert("메시지 서버 통신 실패");
+                document.getElementById('data-container').innerText = error.message;
+            }
+        });
+        }
+        
+   //heart 함수
+      function heart_date_Fc(i){
+			document.getElementById("message_heart_edit_box" + i).addEventListener('submit', async (event) => {
+            event.preventDefault(); // 폼 제출 시 페이지 리프레시 방지
+						const currentDate = getCurrentKoreanDate(); // 현재 날짜 계산 함수
+						
+						// 문서가 로드되면 애니메이션 표시
+					  animationPlayer_loding.style.display = 'block'; // 애니메이션을 보이도록 설정
+					  animationPlayer_loding_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+	
+						const id = Message_array[i][1];
+	          const name = "";
+            const title = document.getElementById("heartEditTitle"+i).value;
+            const icon = "";
+            const pw = "";
+            const date = "";
+            const Num = "heart";
+						
+						// 전송될 데이터 확인을 위한 로그
+		        const requestData = { id, name, title, icon, pw, date ,Num};
+		        console.log('전송할 데이터:', JSON.stringify(requestData)); // 데이터 로그 출력
+        
+            try {
+                const response = await fetch('https://kschost.ddns.net/wedding/api/data', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                  const newData = await response.json();
+                  console.log(newData); // 확인용 출력
+                    
+                  const container = document.getElementById('data-container');
+						      container.innerHTML = ''; // 기존 내용 초기화';
+						        
+				          animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                  
+                  document.getElementById("message_heart_unit"+i).src = 'data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgaWQ9Imljb24taGVhcnRzLWZpbGwtMzAiIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2U5MWU2MyI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiI+PC9wYXRoPjxwYXRoIGQ9Ik0xNy4zNjMgMTEuMDQ1YTMuNjE1IDMuNjE1IDAgMCAxIDUuMDg0IDAgMy41NSAzLjU1IDAgMCAxIDAgNS4wNDdMMTcgMjEuNWwtNS40NDctNS40MDhhMy41NSAzLjU1IDAgMCAxIDAtNS4wNDcgMy42MTUgMy42MTUgMCAwIDEgNS4wODQgMGwuMzYzLjM2LjM2My0uMzZ6bTEuODgtNi4yODhhNS45OTUgNS45OTUgMCAwIDEgMS42ODkgMy4zMzhBNS42MTMgNS42MTMgMCAwIDAgMTcgOC44MDhhNS42MTcgNS42MTcgMCAwIDAtNi44NTYuODE4IDUuNTUgNS41NSAwIDAgMC0uMTc4IDcuNzAxbC4xNzguMTg1IDIuNDIxIDIuNDA0TDExIDIxLjQ4NWwtOC40OC04LjQ5MmE2IDYgMCAwIDEgOC40ODEtOC40NjQgNS45OTggNS45OTggMCAwIDEgOC4yNDIuMjI4eiI+PC9wYXRoPjwvc3ZnPg=='; // Use the actual base64 string  
+                  
+                  let heartEditTitleI = document.getElementById("heartEditTitle"+i).value;
+                  document.getElementById("message_heart_title_unit"+i).textContent = heartEditTitleI;
+                  if(heartEditTitleI){
+                    document.getElementById("message_heart_box" + i).style.display = "flex"; 
+                  }else{
+                    document.getElementById("message_heart_box" + i).style.display = "none"; 
+                  }
+                  
+                  const messageBox_aerial_handle = document.getElementById("message_text_box_unit"+i);
+									innerHeight = messageBox_aerial_handle.scrollHeight; // 내부 요소의 높이를 가져옴
+                  update_aerial_close(i);
+                        
+				          animationPlayer_update.style.display = 'block'; // 애니메이션을 보이도록 설정
+					        animationPlayer_update_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+									animationPlayer_update.play();
+									
+								setTimeout(function() {
+											// 문서가 로드되면 애니메이션 표시
+											animationPlayer_update.stop();
+							        animationPlayer_update.style.display = 'none'; // 애니메이션을 보이도록 설정
+							        animationPlayer_update_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					         }, 1000); // 3000 milliseconds = 3 seconds
+									
+                } else {
+	                animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                
+		              alert("덧글 작성 실패");
+                  throw new Error('데이터 수정 실패: ' + response.status);
+                }
+            } catch (error) {
+		            alert("덧글 서버 통신 실패");
+                document.getElementById('data-container').innerText = error.message;
+            }
+        });
+        }
+
+	// 덧글관리자 접속 함수
+	document.getElementById("message_admin_box").addEventListener('submit', async (event) => {
+				
+            event.preventDefault(); // 폼 제출 시 페이지 리프레시 방지
+						const currentDate = getCurrentKoreanDate(); // 현재 날짜 계산 함수
+						// 문서가 로드되면 애니메이션 표시
+					  animationPlayer_loding.style.display = 'block'; // 애니메이션을 보이도록 설정
+					  animationPlayer_loding_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+	
+            const id = Message_array[0][1];
+            const pw = document.getElementById("deletePw_admin").value;
+            const name = "";
+            const title = "";
+            const icon = "";
+            const date = "";
+            const Num = "admin";
+						
+						// 전송될 데이터 확인을 위한 로그
+        const requestData = { id , pw, name, title ,icon, date, Num};
+        console.log('전송할 데이터:', JSON.stringify(requestData)); // 데이터 로그 출력
+        
+        try {
+                const response = await fetch('https://kschost.ddns.net/wedding/api/data', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+										const newData = await response.json();
+										console.log(newData); // 확인용 출력
+
+                    const container = document.getElementById('data-container');
+						        container.innerHTML = ''; // 기존 내용 초기화';
+                    
+                    
+				          animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    
+							    // 데이터 추가 성공 시 입력 필드 클리어
+				            document.getElementById('deletePw_admin').value = '';
+								    delete_aerial_admin();
+								    for (let i = 0; i < Message_array.length; i++) {
+											    document.getElementById("message_heart_unit"+i).style.display='flex';
+											    document.getElementById("message_heart_unit"+i).onclick = () => heart_aerial(i);
+								}
+								    
+								    
+									// 문서가 로드되면 애니메이션 표시
+					        animationPlayer.style.display = 'block'; // 애니메이션을 보이도록 설정
+					        animationPlayer_overlay.style.display = 'flex'; // 애니메이션을 보이도록 설정
+									animationPlayer.play();
+                    
+										    setTimeout(function() {
+											 // 문서가 로드되면 애니메이션 표시
+											 animationPlayer.stop();
+							        animationPlayer.style.display = 'none'; // 애니메이션을 보이도록 설정
+							        animationPlayer_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+					        									    }, 2000); // 3000 milliseconds = 3 seconds
+
+                } else {
+                  animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							    animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                    alert("관리자 접속 실패");
+                    throw new Error('관리자 접속 실패: ' + response.status);
+                }
+            } catch (error) {
+		            animationPlayer_loding.style.display = 'none'; // 애니메이션을 보이도록 설정
+							  animationPlayer_loding_overlay.style.display = 'none'; // 애니메이션을 보이도록 설정
+                document.getElementById('data-container').innerText = error.message;
+                    alert("관리자 접속 서버 통신 오류");
+                throw new Error('관리자 접속 실패: ' + response.status);
+            }
+});
+
+
+				function scrollTo_menu_top(elementId) {
+
+		document.body.style.height= 'auto';
+		document.body.style.overflowY = 'auto'; 
+						
+    // 전달받은 요소 ID로 요소 선택
+    const element_menu = document.querySelector(`#${elementId}`);
+    
+    if (element_menu) {
+        // 요소의 위치 및 크기 계산
+        const element_menuRect = element_menu.getBoundingClientRect();
+        const absoluteelement_menuTop = element_menuRect.top + window.pageYOffset;
+        
+        // 화면 높이의 절반 계산
+        const middle = window.innerHeight / 2;
+        
+        // 요소가 화면의 중앙에 오도록 스크롤 위치 설정
+        window.scrollTo({
+            top: absoluteelement_menuTop,
+            behavior: 'smooth' // 스크롤을 부드럽게 이동
+        });
+        
+        if (toggleMenulearnner == 1){
+          toggleMenu();
+        }
+    }
+}
+			
+        window.onload = fetchData(); // 페이지가 로드될 때 데이터 가져오기
+		
+</script>
+
+</body>
+</html>
