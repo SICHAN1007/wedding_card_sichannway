@@ -42,9 +42,12 @@ jobs:
           --namespace=wedding \
           --dry-run=client -o yaml | kubectl apply -f -
 
-    - name: Kubernetes 배포 (이미지 롤링 업데이트)
-      run: |
-        kubectl set image deployment/wedding-deployment wedding-container=${{ secrets.DOCKER_USERNAME }}/wedding:latest --namespace=wedding
+    - name: Change to my-k8s-app directory
+      run: cd my-k8s-app
+
+    - name: wedding-deployment apply
+      run: kubectl apply -f wedding-deployment.yaml -n wedding
+      working-directory: my-k8s-app
 
     - name: Test API server connectivity
       run: |
