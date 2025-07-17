@@ -30,6 +30,10 @@ jobs:
         mkdir -p ~/.kube
         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
+    - name: Kubernetes 네임스페이스 생성 확인
+      run: |
+        kubectl get namespace wedding || kubectl create namespace wedding
+
     - name: Kubernetes Secret 생성/업데이트
       run: |
         kubectl create secret generic wedding-secret \
