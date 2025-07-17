@@ -43,8 +43,7 @@ jobs:
           --dry-run=client -o yaml | kubectl apply -f -
 
     - name: wedding-deployment apply
-      run: kubectl apply -f wedding-deployment.yaml -n wedding
-      working-directory: my-k8s-app
+      run: kubectl apply -f my-k8s-app/wedding-deployment.yaml -n wedding
 
     - name: Test API server connectivity
       run: |
