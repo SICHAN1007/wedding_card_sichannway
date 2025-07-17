@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wedding-deployment
-  namespace: wedding
   labels:
     app: wedding
 spec:

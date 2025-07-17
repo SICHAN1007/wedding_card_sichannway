@@ -30,20 +30,18 @@ jobs:
         mkdir -p ~/.kube
         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
-    - name: Kubernetes 네임스페이스 생성 확인
-      run: |
-        kubectl get namespace wedding || kubectl create namespace wedding
-
     - name: Kubernetes Secret 생성/업데이트
       run: |
         kubectl create secret generic wedding-secret \
           --from-literal=NOTION_TOKEN=${{ secrets.NOTION_TOKEN }} \
           --from-literal=DATABASE_ID=${{ secrets.DATABASE_ID }} \
-          --namespace=wedding \
           --dry-run=client -o yaml | kubectl apply -f -
 
     - name: wedding-deployment apply
-      run: kubectl apply -f my-k8s-app/wedding-deployment.yaml -n wedding
+      run: kubectl apply -f my-k8s-app/wedding-deployment.yaml
+
+    - name: wedding-service apply
+      run: kubectl apply -f my-k8s-app/wedding-service.yaml
 
     - name: Test API server connectivity
       run: |
